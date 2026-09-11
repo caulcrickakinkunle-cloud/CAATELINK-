@@ -340,36 +340,49 @@
 
   <!-- ROLE MODAL -->
 
-  <div id="roleModal" class="modal">
+<div id="roleModal" class="modal">
 
-    <div class="modal-box">
+  <div class="modal-box">
 
-      <button class="close-btn" onclick="closeModal('roleModal')">
-        ×
-      </button>
+    <button class="close-btn" onclick="closeModal('roleModal')">
+      ×
+    </button>
 
-      <h2>How will you use CAATELINK?</h2>
+    <h2>How will you use CAATELINK?</h2>
 
-      <button class="role-btn">
-        🔧 I Need a Professional
-      </button>
+    <p>Choose the account type that best describes you.</p>
 
-      <button class="role-btn">
-        👨‍🔧 I'm a Professional
-      </button>
+    <button
+      class="role-btn"
+      onclick="selectRole('customer')"
+    >
+      🔧 I Need a Professional
+    </button>
 
-      <button class="role-btn">
-        🎓 I Want to Learn
-      </button>
+    <button
+      class="role-btn"
+      onclick="selectRole('professional')"
+    >
+      👨‍🔧 I'm a Professional
+    </button>
 
-      <button class="role-btn">
-        🏪 I'm a Store
-      </button>
+    <button
+      class="role-btn"
+      onclick="selectRole('apprentice')"
+    >
+      🎓 I Want to Learn
+    </button>
 
-    </div>
+    <button
+      class="role-btn"
+      onclick="selectRole('store')"
+    >
+      🏪 I'm a Store
+    </button>
 
   </div>
 
+</div>
 
   <!-- REQUEST MODAL -->
 
