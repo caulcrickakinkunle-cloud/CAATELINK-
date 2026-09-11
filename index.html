@@ -1,1 +1,342 @@
- 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CAATELINK | Connecting Skills, Professionals & Solutions</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">CAATELINK</div>
+
+    <nav class="nav">
+      <a href="#services">Services</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#apprenticeship">Apprenticeship</a>
+      <button class="login-btn" onclick="openAuth()">Sign In</button>
+    </nav>
+  </header>
+
+
+  <!-- HERO -->
+  <main>
+
+    <section class="hero">
+
+      <div class="hero-content">
+
+        <p class="eyebrow">
+          TECHNICAL SERVICES & WORKFORCE NETWORK
+        </p>
+
+        <h1>
+          Find the right professional.
+          <span>Get the job done.</span>
+        </h1>
+
+        <p class="hero-text">
+          CAATELINK connects customers with verified technical
+          professionals, apprentices and trusted technical stores.
+        </p>
+
+        <div class="hero-buttons">
+
+          <button class="primary-btn" onclick="openRequest()">
+            🔧 I Need a Professional
+          </button>
+
+          <button class="secondary-btn" onclick="openRoleSelection()">
+            👨‍🔧 Join CAATELINK
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- SERVICES -->
+
+    <section id="services" class="section">
+
+      <div class="section-heading">
+
+        <p class="eyebrow">WHAT WE CONNECT</p>
+
+        <h2>Technical services made simple.</h2>
+
+        <p>
+          Find the right professional for the job,
+          wherever you are.
+        </p>
+
+      </div>
+
+
+      <div class="service-grid">
+
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <h3>Electrical</h3>
+          <p>Wiring, installation, repairs and troubleshooting.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">☀️</div>
+          <h3>Solar & Inverter</h3>
+          <p>Solar installations, batteries and inverter systems.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">📹</div>
+          <h3>CCTV & Security</h3>
+          <p>Security cameras and surveillance solutions.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🔐</div>
+          <h3>Smart Locks</h3>
+          <p>Smart access and modern security systems.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🏠</div>
+          <h3>Home Automation</h3>
+          <p>Smart home and automation solutions.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🛠️</div>
+          <h3>Other Technical Services</h3>
+          <p>Tell us what you need and we'll help find the right professional.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+
+    <section id="how-it-works" class="section how-section">
+
+      <div class="section-heading">
+
+        <p class="eyebrow">HOW IT WORKS</p>
+
+        <h2>From problem to solution.</h2>
+
+      </div>
+
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Tell us the problem</h3>
+          <p>
+            Describe what you need and choose your preferred time.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Find a professional</h3>
+          <p>
+            CAATELINK helps match you with suitable nearby professionals.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Get a quotation</h3>
+          <p>
+            The professional assesses the job and sends a quotation.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Get the job done</h3>
+          <p>
+            Approve, pay, get the work completed and receive your warranty.
+          </p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- APPRENTICESHIP -->
+
+    <section id="apprenticeship" class="section apprentice-section">
+
+      <div class="apprentice-content">
+
+        <p class="eyebrow">BUILDING THE NEXT GENERATION</p>
+
+        <h2>Learn. Practice. Become a Professional.</h2>
+
+        <p>
+          CAATELINK gives aspiring technicians a structured path
+          from learning and practical training to becoming qualified
+          professionals.
+        </p>
+
+        <button class="primary-btn" onclick="openRoleSelection()">
+          🎓 Become an Apprentice
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- JOIN SECTION -->
+
+    <section class="join-section">
+
+      <h2>Be part of the CAATELINK network.</h2>
+
+      <p>
+        Whether you need a professional, provide technical services,
+        want to learn or operate a technical store — there's a place for you.
+      </p>
+
+      <button class="primary-btn" onclick="openRoleSelection()">
+        Get Started
+      </button>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+
+  <footer class="footer">
+
+    <div>
+      <strong>CAATELINK</strong>
+      <p>Connecting Skills, Professionals & Solutions.</p>
+    </div>
+
+    <p>© 2026 CAATELINK. All rights reserved.</p>
+
+  </footer>
+
+
+  <!-- AUTH MODAL -->
+
+  <div id="authModal" class="modal">
+
+    <div class="modal-box">
+
+      <button class="close-btn" onclick="closeModal('authModal')">
+        ×
+      </button>
+
+      <h2>Welcome to CAATELINK</h2>
+
+      <p>Sign in or create your account.</p>
+
+      <button class="primary-btn full-btn">
+        Sign In
+      </button>
+
+      <button class="secondary-btn full-btn" onclick="openRoleSelection()">
+        Create Account
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ROLE MODAL -->
+
+  <div id="roleModal" class="modal">
+
+    <div class="modal-box">
+
+      <button class="close-btn" onclick="closeModal('roleModal')">
+        ×
+      </button>
+
+      <h2>How will you use CAATELINK?</h2>
+
+      <button class="role-btn">
+        🔧 I Need a Professional
+      </button>
+
+      <button class="role-btn">
+        👨‍🔧 I'm a Professional
+      </button>
+
+      <button class="role-btn">
+        🎓 I Want to Learn
+      </button>
+
+      <button class="role-btn">
+        🏪 I'm a Store
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- REQUEST MODAL -->
+
+  <div id="requestModal" class="modal">
+
+    <div class="modal-box">
+
+      <button class="close-btn" onclick="closeModal('requestModal')">
+        ×
+      </button>
+
+      <h2>Request a Professional</h2>
+
+      <p>Tell us what you need.</p>
+
+      <select>
+        <option>Select a service</option>
+        <option>Electrical</option>
+        <option>Solar & Inverter</option>
+        <option>CCTV & Security</option>
+        <option>Smart Locks</option>
+        <option>Home Automation</option>
+        <option>Other Technical Service</option>
+      </select>
+
+      <textarea
+        placeholder="Describe the problem or job you need help with..."
+      ></textarea>
+
+      <input
+        type="text"
+        placeholder="Job location"
+      >
+
+      <button class="primary-btn full-btn">
+        Continue
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <script src="app.js"></script>
+
+</body>
+</html>
