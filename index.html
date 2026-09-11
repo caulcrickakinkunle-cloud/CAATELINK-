@@ -236,30 +236,107 @@
 
   <!-- AUTH MODAL -->
 
-  <div id="authModal" class="modal">
+<div id="authModal" class="modal">
 
-    <div class="modal-box">
+  <div class="modal-box">
 
-      <button class="close-btn" onclick="closeModal('authModal')">
-        ×
-      </button>
+    <button class="close-btn" onclick="closeModal('authModal')">
+      ×
+    </button>
 
-      <h2>Welcome to CAATELINK</h2>
+    <!-- LOGIN -->
+    <div id="loginForm">
 
-      <p>Sign in or create your account.</p>
+      <h2>Welcome Back</h2>
 
-      <button class="primary-btn full-btn">
+      <p>Sign in to your CAATELINK account.</p>
+
+      <input
+        type="email"
+        id="loginEmail"
+        placeholder="Email address"
+        required
+      >
+
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Password"
+        required
+      >
+
+      <button
+        class="primary-btn full-btn"
+        onclick="signInUser()"
+      >
         Sign In
       </button>
 
-      <button class="secondary-btn full-btn" onclick="openRoleSelection()">
+      <p class="auth-switch">
+        Don't have an account?
+        <button
+          type="button"
+          class="text-btn"
+          onclick="openRoleSelection()"
+        >
+          Create Account
+        </button>
+      </p>
+
+    </div>
+
+
+    <!-- SIGN UP -->
+    <div id="signupForm" style="display: none;">
+
+      <h2>Create Your Account</h2>
+
+      <p>Join the CAATELINK network.</p>
+
+      <input
+        type="text"
+        id="signupName"
+        placeholder="Full name"
+        required
+      >
+
+      <input
+        type="email"
+        id="signupEmail"
+        placeholder="Email address"
+        required
+      >
+
+      <input
+        type="password"
+        id="signupPassword"
+        placeholder="Password (minimum 6 characters)"
+        required
+      >
+
+      <button
+        class="primary-btn full-btn"
+        onclick="signUpUser()"
+      >
         Create Account
       </button>
+
+      <p class="auth-switch">
+        Already have an account?
+        <button
+          type="button"
+          class="text-btn"
+          onclick="showAuthLogin()"
+        >
+          Sign In
+        </button>
+      </p>
 
     </div>
 
   </div>
 
+</div>
 
   <!-- ROLE MODAL -->
 
