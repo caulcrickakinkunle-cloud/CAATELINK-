@@ -126,7 +126,6 @@ async function signUpUser() {
     return;
   }
 
-  // Role selected from the role selection screen
   const selectedRole =
     localStorage.getItem("caatelink_selected_role");
 
@@ -138,15 +137,15 @@ async function signUpUser() {
   showNotification("Creating your account...");
 
   const { data, error } = await supabaseClient.auth.signUp({
-  email: email,
-  password: password,
-  options: {
-    data: {
-      full_name: name,
-      role: selectedRole
+    email: email,
+    password: password,
+    options: {
+      data: {
+        full_name: name,
+        role: selectedRole
+      }
     }
-  }
-});
+  });
 
   if (error) {
     console.error(error);
@@ -156,24 +155,6 @@ async function signUpUser() {
 
   if (!data.user) {
     showNotification("Account could not be created.");
-    return;
-  }
-
-  // Save the selected role
-  const { error: roleError } = await supabaseClient
-    .from("user_roles")
-    .insert({
-      user_id: data.user.id,
-      role: selectedRole
-    });
-
-  if (roleError) {
-    console.error(roleError);
-
-    showNotification(
-      "Account created, but your account type could not be saved. Please contact CAATELINK support."
-    );
-
     return;
   }
 
