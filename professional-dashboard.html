@@ -76,13 +76,13 @@
 
       <div class="dashboard-grid">
 
-        <div class="dashboard-card">
-          <h3>🔧 Nearby Jobs</h3>
-          <p>Find jobs around your current location.</p>
-          <button class="primary-btn">
-            View Jobs
-          </button>
-        </div>
+       <div class="dashboard-card">
+  <h2>Nearby Jobs</h2>
+
+  <div id="jobsList">
+    <p>Loading available jobs...</p>
+  </div>
+</div>
 
 
         <div class="dashboard-card">
@@ -244,7 +244,79 @@
     }
 
 
-    loadProfessionalDashboard();
+    async function loadOpenJobs() {
+
+  const jobsList = document.getElementById("jobsList");
+
+  if (!jobsList) return;
+
+  jobsList.innerHTML = "<p>Loading available jobs...</p>";
+
+  const { data: jobs, error } = await supabaseClient
+    .from("jobs")
+    .select("*")
+    .eq("status", "open")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Jobs error:", error);
+    jobsList.innerHTML = "<p>Unable to load jobs.</p>";
+    return;
+  }
+
+  if (!jobs || jobs.length === 0) {
+    jobsList.innerHTML = "<p>No open jobs available.</p>";
+    return;
+  }
+
+  jobsList.innerHTML = jobs.map(job => `
+    <div style="
+      border:1px solid #ddd;
+      padding:15px;
+      margin-bottom:12px;
+      border-radius:10px;
+    ">
+
+      <h3>${job.title}</h3>
+
+      <p>${job.description || "No description provided."}</p>
+
+      <p>
+        <strong>Service:</strong> ${job.service_category}
+      </p>
+
+      <p>
+        <strong>Location:</strong> ${job.location_area || "Not specified"}
+      </p>
+
+      <p>
+        <strong>Date:</strong> ${job.preferred_date || "Flexible"}
+      </p>
+
+      <p>
+        <strong>Time:</strong> ${job.preferred_time || "Flexible"}
+      </p>
+
+      <p>
+        <strong>Billing:</strong> ${job.billing_type}
+      </p>
+
+      <button onclick="viewJob('${job.id}')">
+        View Job
+      </button>
+
+    </div>
+  `).join("");
+}
+
+
+function viewJob(jobId) {
+  alert("Job selected: " + jobId);
+}
+
+
+loadProfessionalDashboard();
+loadOpenJobs();
 
   </script>
 
