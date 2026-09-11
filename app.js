@@ -50,7 +50,33 @@ function openRequest() {
 // ========================================
 
 function showNotification(message) {
-  alert(message);
+  const existing = document.getElementById("caatelinkNotification");
+
+  if (existing) {
+    existing.remove();
+  }
+
+  const notification = document.createElement("div");
+
+  notification.id = "caatelinkNotification";
+  notification.textContent = message;
+
+  notification.style.position = "fixed";
+  notification.style.top = "20px";
+  notification.style.right = "20px";
+  notification.style.zIndex = "99999";
+  notification.style.padding = "14px 20px";
+  notification.style.background = "#111";
+  notification.style.color = "#fff";
+  notification.style.borderRadius = "10px";
+  notification.style.boxShadow = "0 5px 20px rgba(0,0,0,0.2)";
+  notification.style.fontSize = "14px";
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
 }
 
 
