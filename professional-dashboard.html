@@ -176,81 +176,26 @@
 
   <script>
 
-    async function loadProfessionalDashboard() {
-
-      const {
-        data: { user },
-        error
-      } = await supabaseClient.auth.getUser();
-
-      if (error || !user) {
-
-        window.location.href = "index.html";
-
-        return;
-      }
-
-
-      // Load profile
-
-      const { data: profile } = await supabaseClient
-        .from("profiles")
-        .select("full_name, email")
-        .eq("id", user.id)
-        .maybeSingle();
-
-
-      if (profile) {
-
-        document.getElementById("welcomeName").textContent =
-          "Welcome, " + (profile.full_name || "Professional");
-
-        document.getElementById("profileEmail").textContent =
-          profile.email || user.email;
-
-      }
-
-
-      // Load wallet
-
-      const { data: wallet } = await supabaseClient
-        .from("wallets")
-        .select("balance")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
-
-      if (wallet) {
-
-        document.getElementById("walletBalance").textContent =
-          "₦" + Number(wallet.balance || 0).toLocaleString(
-            "en-NG",
-            {
-              minimumFractionDigits: 2
-            }
-          );
-
-      }
-
-    }
-
-
-    async function signOutUser() {
-
-      await supabaseClient.auth.signOut();
-
-      window.location.href = "index.html";
-
-    }
-
-
     async function loadOpenJobs() {
 
   const jobsList = document.getElementById("jobsList");
 
   if (!jobsList) return;
 
-  jobsList.innerHTML = "<p>Loading available jobs...</p>";
+  jobsList.innerHTML = "<p>Checking for jobs...</p>";
+
+  const {
+    data: { user },
+    error: userError
+  } = await supabaseClient.auth.getUser();
+
+  if (userError || !user) {
+    console.error("USER ERROR:", userError);
+    jobsList.innerHTML = "<p>Professional login session not found.</p>";
+    return;
+  }
+
+  console.log("Professional user:", user.id);
 
   const { data: jobs, error } = await supabaseClient
     .from("jobs")
@@ -258,9 +203,15 @@
     .eq("status", "open")
     .order("created_at", { ascending: false });
 
+  console.log("JOBS:", jobs);
+  console.log("JOBS ERROR:", error);
+
   if (error) {
-    console.error("Jobs error:", error);
-    jobsList.innerHTML = "<p>Unable to load jobs.</p>";
+    jobsList.innerHTML = `
+      <p style="color:red;">
+        Jobs error: ${error.message}
+      </p>
+    `;
     return;
   }
 
@@ -307,11 +258,6 @@
 
     </div>
   `).join("");
-}
-
-
-function viewJob(jobId) {
-  alert("Job selected: " + jobId);
 }
 
 
