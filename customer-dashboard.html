@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Customer Dashboard | CAATELINK</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="dashboard-header">
+
+    <div>
+      <h1>CAATELINK</h1>
+      <p>Customer Dashboard</p>
+    </div>
+
+    <button
+      class="primary-btn"
+      onclick="signOutCustomer()"
+    >
+      Sign Out
+    </button>
+
+  </header>
+
+
+  <main class="dashboard-container">
+
+    <section class="welcome-section">
+
+      <h2 id="welcomeName">
+        Welcome
+      </h2>
+
+      <p>
+        Find trusted professionals for your technical needs.
+      </p>
+
+    </section>
+
+
+    <section class="dashboard-card">
+
+      <h2>🔧 Request a Professional</h2>
+
+      <p>
+        Tell us what you need and CAATELINK will help connect you
+        with the right professional.
+      </p>
+
+
+      <label>Service</label>
+
+      <select id="serviceCategory">
+
+        <option value="">
+          Select a service
+        </option>
+
+        <option value="Electrical">
+          Electrical
+        </option>
+
+        <option value="Automation">
+          Automation
+        </option>
+
+        <option value="Smart Lock">
+          Smart Lock
+        </option>
+
+        <option value="Solar">
+          Solar
+        </option>
+
+        <option value="Plumbing">
+          Plumbing
+        </option>
+
+        <option value="Air Conditioning">
+          Air Conditioning
+        </option>
+
+        <option value="Other">
+          Other Technical Service
+        </option>
+
+      </select>
+
+
+      <label>What do you need?</label>
+
+      <input
+        type="text"
+        id="jobTitle"
+        placeholder="Example: Install 6 electrical sockets"
+      >
+
+
+      <label>Describe the job</label>
+
+      <textarea
+        id="jobDescription"
+        rows="5"
+        placeholder="Explain what you need the professional to do..."
+      ></textarea>
+
+
+      <label>Area</label>
+
+      <input
+        type="text"
+        id="locationArea"
+        placeholder="Example: Ikeja, Lagos"
+      >
+
+
+      <label>Preferred date</label>
+
+      <input
+        type="date"
+        id="preferredDate"
+      >
+
+
+      <label>Preferred time</label>
+
+      <input
+        type="text"
+        id="preferredTime"
+        placeholder="Example: 10:00 AM"
+      >
+
+
+      <label>Billing preference</label>
+
+      <select id="billingType">
+
+        <option value="fixed_quote">
+          Fixed Quote
+        </option>
+
+        <option value="hourly">
+          Hourly Labour
+        </option>
+
+        <option value="inspection_first">
+          Inspection First
+        </option>
+
+        <option value="materials_workmanship">
+          Materials + Workmanship
+        </option>
+
+      </select>
+
+
+      <button
+        class="primary-btn full-btn"
+        onclick="submitJob()"
+      >
+        Request a Professional
+      </button>
+
+    </section>
+
+
+    <section class="dashboard-card">
+
+      <h2>📋 My Requests</h2>
+
+      <div id="myJobs">
+
+        <p>
+          Your requests will appear here.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="app.js"></script>
+
+
+  <script>
+
+    async function loadCustomerDashboard() {
+
+      const {
+        data: { user },
+        error
+      } = await supabaseClient.auth.getUser();
+
+
+      if (error || !user) {
+
+        window.location.href = "index.html";
+
+        return;
+
+      }
+
+
+      const { data: profile } = await supabaseClient
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
+
+
+      if (profile) {
+
+        document.getElementById("welcomeName").textContent =
+          "Welcome, " + (profile.full_name || "Customer");
+
+      }
+
+    }
+
+
+    async function submitJob() {
+
+      const {
+        data: { user }
+      } = await supabaseClient.auth.getUser();
+
+
+      if (!user) {
+
+        alert("Please sign in first.");
+
+        window.location.href = "index.html";
+
+        return;
+
+      }
+
+
+      const serviceCategory =
+        document.getElementById("serviceCategory").value;
+
+      const jobTitle =
+        document.getElementById("jobTitle").value.trim();
+
+      const jobDescription =
+        document.getElementById("jobDescription").value.trim();
+
+      const locationArea =
+        document.getElementById("locationArea").value.trim();
+
+      const preferredDate =
+        document.getElementById("preferredDate").value;
+
+      const preferredTime =
+        document.getElementById("preferredTime").value.trim();
+
+      const billingType =
+        document.getElementById("billingType").value;
+
+
+      if (
+        !serviceCategory ||
+        !jobTitle ||
+        !jobDescription ||
+        !locationArea
+      ) {
+
+        showNotification(
+          "Please complete the service, job title, description and area."
+        );
+
+        return;
+
+      }
+
+
+      showNotification("Submitting your request...");
+
+
+      const { data, error } = await supabaseClient
+        .from("jobs")
+        .insert({
+          customer_id: user.id,
+          title: jobTitle,
+          description: jobDescription,
+          service_category: serviceCategory,
+          location_area: locationArea,
+          preferred_date: preferredDate || null,
+          preferred_time: preferredTime || null,
+          billing_type: billingType,
+          status: "open"
+        })
+        .select()
+        .single();
+
+
+      if (error) {
+
+        console.error(error);
+
+        showNotification(
+          "Could not submit your request: " + error.message
+        );
+
+        return;
+
+      }
+
+
+      showNotification(
+        "Job request submitted successfully!"
+      );
+
+
+      document.getElementById("jobTitle").value = "";
+      document.getElementById("jobDescription").value = "";
+      document.getElementById("locationArea").value = "";
+      document.getElementById("preferredDate").value = "";
+      document.getElementById("preferredTime").value = "";
+
+    }
+
+
+    async function signOutCustomer() {
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href = "index.html";
+
+    }
+
+
+    loadCustomerDashboard();
+
+  </script>
+
+</body>
+</html>
