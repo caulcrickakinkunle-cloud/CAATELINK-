@@ -138,14 +138,15 @@ async function signUpUser() {
   showNotification("Creating your account...");
 
   const { data, error } = await supabaseClient.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-      data: {
-        full_name: name
-      }
+  email: email,
+  password: password,
+  options: {
+    data: {
+      full_name: name,
+      role: selectedRole
     }
-  });
+  }
+});
 
   if (error) {
     console.error(error);
