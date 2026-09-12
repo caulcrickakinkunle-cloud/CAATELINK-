@@ -394,3 +394,37 @@ document.addEventListener("keydown", function (event) {
 // ========================================
 
 checkExistingSession();
+
+async function resetPassword() {
+  const emailInput = document.getElementById("loginEmail");
+
+  if (!emailInput) {
+    showNotification("Login email field not found.");
+    return;
+  }
+
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    showNotification("Enter your email first.");
+    return;
+  }
+
+  showNotification("Sending password reset email...");
+
+  const { error } =
+    await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo:
+        "https://caulcrickakinkunle-cloud.github.io/CAATELINK-/reset-password.html"
+    });
+
+  if (error) {
+    console.error("Password reset error:", error);
+    showNotification(error.message);
+    return;
+  }
+
+  showNotification(
+    "Password reset email sent. Check your email."
+  );
+}
