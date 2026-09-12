@@ -844,12 +844,53 @@ function closeJobDetails() {
 }
 
 
-function acceptJob(jobId) {
+async function acceptJob(jobId) {
+
+  const {
+    data: { user },
+    error: userError
+  } = await supabaseClient.auth.getUser();
+
+  if (userError || !user) {
+    showNotification("Please sign in again.");
+    return;
+  }
+
+  showNotification("Accepting job...");
+
+  const { data, error } = await supabaseClient
+    .from("job_matches")
+    .insert({
+      job_id: jobId,
+      professional_id: user.id,
+      status: "offered"
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Accept job error:", error);
+
+    if (error.code === "23505") {
+      showNotification("You have already accepted this job.");
+    } else {
+      showNotification(
+        "Could not accept job: " + error.message
+      );
+    }
+
+    return;
+  }
+
+  console.log("Job match created:", data);
+
+  closeJobDetails();
 
   showNotification(
-    "Accept Job selected. Matching system coming next."
+    "Job accepted successfully!"
   );
 
+  await loadOpenJobs();
 }
 
 
