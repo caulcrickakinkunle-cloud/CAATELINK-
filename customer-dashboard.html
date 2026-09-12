@@ -454,13 +454,14 @@
 
     async function loadCustomerDashboard() {
 
-
+console.log("Checking customer session...");
       const {
         data: { user },
         error
       } =
         await supabaseClient.auth.getUser();
-
+console.log("CUSTOMER USER:", user);
+console.log("CUSTOMER AUTH ERROR:", error);
 
       if (error || !user) {
 
