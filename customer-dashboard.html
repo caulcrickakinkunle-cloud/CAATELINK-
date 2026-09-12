@@ -1,270 +1,795 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Customer Dashboard | CAATELINK</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <style>
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7f8;
+      color: #222;
+    }
+
+    header {
+      background: #0b8f55;
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    header button {
+      background: white;
+      color: #0b8f55;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+
+    .card h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .primary-button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      background: #0b8f55;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .job-card {
+      border: 1px solid #ddd;
+      padding: 16px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .job-card h3 {
+      margin-top: 0;
+      color: #0b8f55;
+    }
+
+    .job-card p {
+      margin: 7px 0;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 20px;
+      background: #eee;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .status-open {
+      background: #dff7e9;
+      color: #08753f;
+    }
+
+    #caatelinkNotification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      padding: 14px 20px;
+      background: #111;
+      color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      font-size: 14px;
+    }
+
+  </style>
+
 </head>
+
 
 <body>
 
-  <header class="dashboard-header">
 
-    <div>
-      <h1>CAATELINK</h1>
-      <p>Customer Dashboard</p>
-    </div>
+  <!-- HEADER -->
 
-    <button
-      class="primary-btn"
-      onclick="signOutCustomer()"
-    >
+  <header>
+
+    <h1>
+      CAATELINK
+    </h1>
+
+    <button onclick="signOutUser()">
       Sign Out
     </button>
 
   </header>
 
 
-  <main class="dashboard-container">
+  <main class="container">
 
-    <section class="welcome-section">
+
+    <!-- WELCOME -->
+
+    <section class="card">
 
       <h2 id="welcomeName">
-        Welcome
+        Welcome, Customer
       </h2>
 
       <p>
-        Find trusted professionals for your technical needs.
+        Request trusted professionals for your technical needs.
       </p>
 
     </section>
 
 
-    <section class="dashboard-card">
+    <!-- REQUEST A PROFESSIONAL -->
 
-      <h2>🔧 Request a Professional</h2>
+    <section class="card">
 
-      <p>
-        Tell us what you need and CAATELINK will help connect you
-        with the right professional.
-      </p>
-
-
-      <label>Service</label>
-
-      <select id="serviceCategory">
-
-        <option value="">
-          Select a service
-        </option>
-
-        <option value="Electrical">
-          Electrical
-        </option>
-
-        <option value="Automation">
-          Automation
-        </option>
-
-        <option value="Smart Lock">
-          Smart Lock
-        </option>
-
-        <option value="Solar">
-          Solar
-        </option>
-
-        <option value="Plumbing">
-          Plumbing
-        </option>
-
-        <option value="Air Conditioning">
-          Air Conditioning
-        </option>
-
-        <option value="Other">
-          Other Technical Service
-        </option>
-
-      </select>
-
-
-      <label>What do you need?</label>
-
-      <input
-        type="text"
-        id="jobTitle"
-        placeholder="Example: Install 6 electrical sockets"
-      >
-
-
-      <label>Describe the job</label>
-
-      <textarea
-        id="jobDescription"
-        rows="5"
-        placeholder="Explain what you need the professional to do..."
-      ></textarea>
-
-
-      <label>Area</label>
-
-      <input
-        type="text"
-        id="locationArea"
-        placeholder="Example: Ikeja, Lagos"
-      >
-
-
-      <label>Preferred date</label>
-
-      <input
-        type="date"
-        id="preferredDate"
-      >
-
-
-      <label>Preferred time</label>
-
-      <input
-        type="text"
-        id="preferredTime"
-        placeholder="Example: 10:00 AM"
-      >
-
-
-      <label>Billing preference</label>
-
-      <select id="billingType">
-
-        <option value="fixed_quote">
-          Fixed Quote
-        </option>
-
-        <option value="hourly">
-          Hourly Labour
-        </option>
-
-        <option value="inspection_first">
-          Inspection First
-        </option>
-
-        <option value="materials_workmanship">
-          Materials + Workmanship
-        </option>
-
-      </select>
-
-
-      <button
-        class="primary-btn full-btn"
-        onclick="submitJob()"
-      >
+      <h2>
         Request a Professional
-      </button>
+      </h2>
+
+
+      <form id="jobForm">
+
+
+        <label for="serviceCategory">
+          Service
+        </label>
+
+        <select
+          id="serviceCategory"
+          required
+        >
+
+          <option value="">
+            Select a service
+          </option>
+
+          <option value="Electrical">
+            Electrical
+          </option>
+
+          <option value="Automation">
+            Automation
+          </option>
+
+          <option value="Smart Lock">
+            Smart Lock
+          </option>
+
+          <option value="Solar">
+            Solar
+          </option>
+
+          <option value="Plumbing">
+            Plumbing
+          </option>
+
+          <option value="Air Conditioning">
+            Air Conditioning
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+        </select>
+
+
+        <label for="jobTitle">
+          Job Title
+        </label>
+
+        <input
+          type="text"
+          id="jobTitle"
+          placeholder="e.g. Install 4 electrical sockets"
+          required
+        >
+
+
+        <label for="jobDescription">
+          Description
+        </label>
+
+        <textarea
+          id="jobDescription"
+          placeholder="Describe what you need done..."
+          required
+        ></textarea>
+
+
+        <label for="locationArea">
+          Area
+        </label>
+
+        <input
+          type="text"
+          id="locationArea"
+          placeholder="e.g. Ikeja, Lagos"
+          required
+        >
+
+
+        <label for="preferredDate">
+          Preferred Date
+        </label>
+
+        <input
+          type="date"
+          id="preferredDate"
+        >
+
+
+        <label for="preferredTime">
+          Preferred Time
+        </label>
+
+        <input
+          type="text"
+          id="preferredTime"
+          placeholder="e.g. 10:00am"
+        >
+
+
+        <label for="billingType">
+          Billing Preference
+        </label>
+
+        <select
+          id="billingType"
+          required
+        >
+
+          <option value="fixed_quote">
+            Fixed Quote
+          </option>
+
+          <option value="hourly_labour">
+            Hourly Labour
+          </option>
+
+          <option value="inspection_first">
+            Inspection First
+          </option>
+
+          <option value="materials_workmanship">
+            Materials + Workmanship
+          </option>
+
+        </select>
+
+
+        <button
+          type="submit"
+          class="primary-button"
+          id="submitJobButton"
+        >
+          Request a Professional
+        </button>
+
+
+      </form>
 
     </section>
 
 
-    <section class="dashboard-card">
+    <!-- MY REQUESTS -->
 
-      <h2>📋 My Requests</h2>
+    <section class="card">
 
-      <div id="myJobs">
+      <h2>
+        My Requests
+      </h2>
+
+      <div id="myJobsList">
 
         <p>
-          Your requests will appear here.
+          Loading your requests...
         </p>
 
       </div>
 
     </section>
 
+
   </main>
 
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SUPABASE -->
 
-  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
   <script>
 
-    async function loadCustomerDashboard() {
 
-      const {
-        data: { user },
-        error
-      } = await supabaseClient.auth.getUser();
+    /* =========================
+       SUPABASE
+    ========================= */
 
 
-      if (error || !user) {
+    const SUPABASE_URL =
+      "https://mkjvlotgilihlrgtanps.supabase.co";
 
-        window.location.href = "index.html";
 
-        return;
+    /*
+      IMPORTANT:
+      Put the SAME publishable key
+      you already use in app.js here.
+    */
 
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_1iq8mtaSTBmRVhcLTUrlFw_RkQfw6IxY";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    /* =========================
+       NOTIFICATION
+    ========================= */
+
+
+    function showNotification(message) {
+
+      const existing =
+        document.getElementById(
+          "caatelinkNotification"
+        );
+
+      if (existing) {
+        existing.remove();
       }
 
 
-      const { data: profile } = await supabaseClient
-        .from("profiles")
-        .select("full_name")
-        .eq("id", user.id)
-        .maybeSingle();
+      const notification =
+        document.createElement("div");
 
 
-      if (profile) {
+      notification.id =
+        "caatelinkNotification";
 
-        document.getElementById("welcomeName").textContent =
-          "Welcome, " + (profile.full_name || "Customer");
 
-      }
+      notification.textContent =
+        message;
+
+
+      document.body.appendChild(
+        notification
+      );
+
+
+      setTimeout(() => {
+
+        notification.remove();
+
+      }, 3000);
 
     }
 
 
-    async function submitJob() {
+    /* =========================
+       LOAD CUSTOMER DASHBOARD
+    ========================= */
+
+
+    async function loadCustomerDashboard() {
+
 
       const {
-        data: { user }
-      } = await supabaseClient.auth.getUser();
+        data: { user },
+        error
+      } =
+        await supabaseClient.auth.getUser();
 
 
-      if (!user) {
+      if (error || !user) {
 
-        alert("Please sign in first.");
-
-        window.location.href = "index.html";
+        window.location.href =
+          "index.html";
 
         return;
 
       }
 
 
+      /* LOAD PROFILE */
+
+
+      const {
+        data: profile,
+        error: profileError
+      } =
+        await supabaseClient
+
+          .from("profiles")
+
+          .select(
+            "full_name, email"
+          )
+
+          .eq(
+            "id",
+            user.id
+          )
+
+          .maybeSingle();
+
+
+      if (profileError) {
+
+        console.error(
+          "Profile error:",
+          profileError
+        );
+
+      }
+
+
+      if (profile) {
+
+        document.getElementById(
+          "welcomeName"
+        ).textContent =
+          "Welcome, " +
+          (
+            profile.full_name ||
+            "Customer"
+          );
+
+      }
+
+
+      /* LOAD CUSTOMER JOBS */
+
+
+      await loadMyJobs();
+
+    }
+
+
+    /* =========================
+       LOAD MY JOBS
+    ========================= */
+
+
+    async function loadMyJobs() {
+
+
+      const myJobsList =
+        document.getElementById(
+          "myJobsList"
+        );
+
+
+      if (!myJobsList) {
+        return;
+      }
+
+
+      myJobsList.innerHTML =
+        "<p>Loading your requests...</p>";
+
+
+      const {
+        data: { user },
+        error: userError
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      if (userError || !user) {
+
+        myJobsList.innerHTML =
+          "<p>Please sign in again.</p>";
+
+        return;
+
+      }
+
+
+      console.log(
+        "Customer user:",
+        user.id
+      );
+
+
+      const {
+        data: jobs,
+        error
+      } =
+        await supabaseClient
+
+          .from("jobs")
+
+          .select("*")
+
+          .eq(
+            "customer_id",
+            user.id
+          )
+
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      console.log(
+        "CUSTOMER JOBS:",
+        jobs
+      );
+
+
+      console.log(
+        "CUSTOMER JOB ERROR:",
+        error
+      );
+
+
+      if (error) {
+
+        myJobsList.innerHTML = `
+
+          <p style="color:red;">
+            Unable to load your requests:
+            ${error.message}
+          </p>
+
+        `;
+
+        return;
+
+      }
+
+
+      if (!jobs || jobs.length === 0) {
+
+        myJobsList.innerHTML = `
+
+          <p>
+            You have not created any requests yet.
+          </p>
+
+        `;
+
+        return;
+
+      }
+
+
+      myJobsList.innerHTML =
+        jobs.map(job => `
+
+          <div class="job-card">
+
+            <h3>
+              ${job.title}
+            </h3>
+
+
+            <p>
+              ${
+                job.description ||
+                "No description provided."
+              }
+            </p>
+
+
+            <p>
+              <strong>
+                Service:
+              </strong>
+
+              ${job.service_category}
+            </p>
+
+
+            <p>
+              <strong>
+                Location:
+              </strong>
+
+              ${
+                job.location_area ||
+                "Not specified"
+              }
+            </p>
+
+
+            <p>
+              <strong>
+                Preferred date:
+              </strong>
+
+              ${
+                job.preferred_date ||
+                "Flexible"
+              }
+            </p>
+
+
+            <p>
+              <strong>
+                Preferred time:
+              </strong>
+
+              ${
+                job.preferred_time ||
+                "Flexible"
+              }
+            </p>
+
+
+            <p>
+              <strong>
+                Billing:
+              </strong>
+
+              ${job.billing_type}
+            </p>
+
+
+            <p>
+
+              <strong>
+                Status:
+              </strong>
+
+              <span class="status status-open">
+
+                ${job.status}
+
+              </span>
+
+            </p>
+
+
+          </div>
+
+        `).join("");
+
+    }
+
+
+    /* =========================
+       SUBMIT JOB
+    ========================= */
+
+
+    async function submitJob(event) {
+
+
+      event.preventDefault();
+
+
+      const button =
+        document.getElementById(
+          "submitJobButton"
+        );
+
+
       const serviceCategory =
-        document.getElementById("serviceCategory").value;
+        document.getElementById(
+          "serviceCategory"
+        ).value;
+
 
       const jobTitle =
-        document.getElementById("jobTitle").value.trim();
+        document.getElementById(
+          "jobTitle"
+        ).value.trim();
+
 
       const jobDescription =
-        document.getElementById("jobDescription").value.trim();
+        document.getElementById(
+          "jobDescription"
+        ).value.trim();
+
 
       const locationArea =
-        document.getElementById("locationArea").value.trim();
+        document.getElementById(
+          "locationArea"
+        ).value.trim();
+
 
       const preferredDate =
-        document.getElementById("preferredDate").value;
+        document.getElementById(
+          "preferredDate"
+        ).value;
+
 
       const preferredTime =
-        document.getElementById("preferredTime").value.trim();
+        document.getElementById(
+          "preferredTime"
+        ).value.trim();
+
 
       const billingType =
-        document.getElementById("billingType").value;
+        document.getElementById(
+          "billingType"
+        ).value;
 
 
       if (
@@ -275,7 +800,7 @@
       ) {
 
         showNotification(
-          "Please complete the service, job title, description and area."
+          "Please complete all required fields."
         );
 
         return;
@@ -283,65 +808,167 @@
       }
 
 
-      showNotification("Submitting your request...");
+      const {
+        data: { user },
+        error: userError
+      } =
+        await supabaseClient.auth.getUser();
 
 
-      const { data, error } = await supabaseClient
-        .from("jobs")
-        .insert({
-          customer_id: user.id,
-          title: jobTitle,
-          description: jobDescription,
-          service_category: serviceCategory,
-          location_area: locationArea,
-          preferred_date: preferredDate || null,
-          preferred_time: preferredTime || null,
-          billing_type: billingType,
-          status: "open"
-        })
-        .select()
-        .single();
+      if (userError || !user) {
+
+        showNotification(
+          "Please sign in again."
+        );
+
+        return;
+
+      }
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "Creating request...";
+
+
+      const {
+        data: job,
+        error
+      } =
+        await supabaseClient
+
+          .from("jobs")
+
+          .insert({
+
+            customer_id:
+              user.id,
+
+            title:
+              jobTitle,
+
+            description:
+              jobDescription,
+
+            service_category:
+              serviceCategory,
+
+            location_area:
+              locationArea,
+
+            preferred_date:
+              preferredDate ||
+              null,
+
+            preferred_time:
+              preferredTime ||
+              null,
+
+            billing_type:
+              billingType,
+
+            status:
+              "open"
+
+          })
+
+          .select()
+
+          .single();
 
 
       if (error) {
 
-        console.error(error);
+        console.error(
+          "Create job error:",
+          error
+        );
+
 
         showNotification(
-          "Could not submit your request: " + error.message
+          "Could not create request: " +
+          error.message
         );
+
+
+        button.disabled = false;
+
+        button.textContent =
+          "Request a Professional";
 
         return;
 
       }
 
 
-      showNotification(
-        "Job request submitted successfully!"
+      console.log(
+        "Created job:",
+        job
       );
 
 
-      document.getElementById("jobTitle").value = "";
-      document.getElementById("jobDescription").value = "";
-      document.getElementById("locationArea").value = "";
-      document.getElementById("preferredDate").value = "";
-      document.getElementById("preferredTime").value = "";
+      showNotification(
+        "Professional request created successfully!"
+      );
+
+
+      document.getElementById(
+        "jobForm"
+      ).reset();
+
+
+      button.disabled = false;
+
+      button.textContent =
+        "Request a Professional";
+
+
+      await loadMyJobs();
 
     }
 
 
-    async function signOutCustomer() {
+    /* =========================
+       SIGN OUT
+    ========================= */
+
+
+    async function signOutUser() {
+
 
       await supabaseClient.auth.signOut();
 
-      window.location.href = "index.html";
+
+      window.location.href =
+        "index.html";
 
     }
+
+
+    /* =========================
+       FORM EVENT
+    ========================= */
+
+
+    document
+      .getElementById("jobForm")
+      .addEventListener(
+        "submit",
+        submitJob
+      );
+
+
+    /* =========================
+       START DASHBOARD
+    ========================= */
 
 
     loadCustomerDashboard();
 
+
   </script>
 
 </body>
+
 </html>
