@@ -454,79 +454,111 @@
 
     async function loadCustomerDashboard() {
 
-console.log("Checking customer session...");
-      const {
-        data: { user },
-        error
-      } =
-        await supabaseClient.auth.getUser();
-console.log("CUSTOMER USER:", user);
-console.log("CUSTOMER AUTH ERROR:", error);
+  console.log("Customer dashboard starting...");
 
-      if (error || !user) {
-
-        window.location.href =
-          "index.html";
-
-        return;
-
-      }
+  /*
+    Give Supabase a moment to restore
+    the login session from browser storage.
+  */
+  await new Promise(resolve => {
+    setTimeout(resolve, 800);
+  });
 
 
-      /* LOAD PROFILE */
+  /*
+    First check the stored session.
+  */
+  const {
+    data: sessionData,
+    error: sessionError
+  } = await supabaseClient.auth.getSession();
 
 
-      const {
-        data: profile,
-        error: profileError
-      } =
-        await supabaseClient
+  console.log(
+    "CUSTOMER SESSION:",
+    sessionData
+  );
 
-          .from("profiles")
-
-          .select(
-            "full_name, email"
-          )
-
-          .eq(
-            "id",
-            user.id
-          )
-
-          .maybeSingle();
+  console.log(
+    "SESSION ERROR:",
+    sessionError
+  );
 
 
-      if (profileError) {
+  if (
+    sessionError ||
+    !sessionData ||
+    !sessionData.session ||
+    !sessionData.session.user
+  ) {
 
-        console.error(
-          "Profile error:",
-          profileError
-        );
+    console.log(
+      "No customer session found."
+    );
 
-      }
+    window.location.href =
+      "index.html";
 
-
-      if (profile) {
-
-        document.getElementById(
-          "welcomeName"
-        ).textContent =
-          "Welcome, " +
-          (
-            profile.full_name ||
-            "Customer"
-          );
-
-      }
+    return;
+  }
 
 
-      /* LOAD CUSTOMER JOBS */
+  const user =
+    sessionData.session.user;
 
 
-      await loadMyJobs();
+  console.log(
+    "CUSTOMER LOGGED IN:",
+    user.id
+  );
 
-    }
 
+  /*
+    Load profile
+  */
+
+  const {
+    data: profile,
+    error: profileError
+  } =
+    await supabaseClient
+      .from("profiles")
+      .select("full_name, email")
+      .eq("id", user.id)
+      .maybeSingle();
+
+
+  if (profileError) {
+
+    console.error(
+      "Profile error:",
+      profileError
+    );
+
+  }
+
+
+  if (profile) {
+
+    document.getElementById(
+      "welcomeName"
+    ).textContent =
+      "Welcome, " +
+      (
+        profile.full_name ||
+        "Customer"
+      );
+
+  }
+
+
+  /*
+    Load customer's jobs
+  */
+
+  await loadMyJobs();
+
+}
 
     /* =========================
        LOAD MY JOBS
