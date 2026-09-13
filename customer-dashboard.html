@@ -567,203 +567,179 @@
 
     async function loadMyJobs() {
 
+  const myJobsList =
+    document.getElementById("myJobsList");
 
-      const myJobsList =
-        document.getElementById(
-          "myJobsList"
-        );
+  if (!myJobsList) {
+    return;
+  }
 
+  myJobsList.innerHTML =
+    "<p>Loading your requests...</p>";
 
-      if (!myJobsList) {
-        return;
-      }
 
+  /*
+    Get the current saved session
+  */
 
-      myJobsList.innerHTML =
-        "<p>Loading your requests...</p>";
+  const {
+    data: sessionData,
+    error: sessionError
+  } =
+    await supabaseClient.auth.getSession();
 
 
-      const {
-        data: { user },
-        error: userError
-      } =
-        await supabaseClient.auth.getUser();
+  console.log(
+    "CUSTOMER REQUEST SESSION:",
+    sessionData
+  );
 
 
-      if (userError || !user) {
+  if (
+    sessionError ||
+    !sessionData ||
+    !sessionData.session ||
+    !sessionData.session.user
+  ) {
 
-        myJobsList.innerHTML =
-          "<p>Please sign in again.</p>";
+    myJobsList.innerHTML =
+      "<p>Customer session not found.</p>";
 
-        return;
+    return;
+  }
 
-      }
 
+  const user =
+    sessionData.session.user;
 
-      console.log(
-        "Customer user:",
-        user.id
-      );
 
+  console.log(
+    "Loading jobs for customer:",
+    user.id
+  );
 
-      const {
-        data: jobs,
-        error
-      } =
-        await supabaseClient
 
-          .from("jobs")
+  /*
+    Load this customer's requests
+  */
 
-          .select("*")
+  const {
+    data: jobs,
+    error
+  } =
+    await supabaseClient
+      .from("jobs")
+      .select("*")
+      .eq("customer_id", user.id)
+      .order("created_at", {
+        ascending: false
+      });
 
-          .eq(
-            "customer_id",
-            user.id
-          )
 
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          );
+  console.log(
+    "CUSTOMER JOBS:",
+    jobs
+  );
 
+  console.log(
+    "CUSTOMER JOB ERROR:",
+    error
+  );
 
-      console.log(
-        "CUSTOMER JOBS:",
-        jobs
-      );
 
+  if (error) {
 
-      console.log(
-        "CUSTOMER JOB ERROR:",
-        error
-      );
+    myJobsList.innerHTML = `
 
+      <p style="color:red;">
+        Unable to load your requests:
+        ${error.message}
+      </p>
 
-      if (error) {
+    `;
 
-        myJobsList.innerHTML = `
+    return;
+  }
 
-          <p style="color:red;">
-            Unable to load your requests:
-            ${error.message}
-          </p>
 
-        `;
+  if (!jobs || jobs.length === 0) {
 
-        return;
+    myJobsList.innerHTML = `
 
-      }
-
-
-      if (!jobs || jobs.length === 0) {
-
-        myJobsList.innerHTML = `
-
-          <p>
-            You have not created any requests yet.
-          </p>
-
-        `;
-
-        return;
-
-      }
-
-
-      myJobsList.innerHTML =
-        jobs.map(job => `
-
-          <div class="job-card">
-
-            <h3>
-              ${job.title}
-            </h3>
-
-
-            <p>
-              ${
-                job.description ||
-                "No description provided."
-              }
-            </p>
-
-
-            <p>
-              <strong>
-                Service:
-              </strong>
-
-              ${job.service_category}
-            </p>
-
-
-            <p>
-              <strong>
-                Location:
-              </strong>
-
-              ${
-                job.location_area ||
-                "Not specified"
-              }
-            </p>
-
-
-            <p>
-              <strong>
-                Preferred date:
-              </strong>
-
-              ${
-                job.preferred_date ||
-                "Flexible"
-              }
-            </p>
-
-
-            <p>
-              <strong>
-                Preferred time:
-              </strong>
-
-              ${
-                job.preferred_time ||
-                "Flexible"
-              }
-            </p>
-
-
-            <p>
-              <strong>
-                Billing:
-              </strong>
-
-              ${job.billing_type}
-            </p>
-
-
-            <p>
-
-              <strong>
-                Status:
-              </strong>
-
-              <span class="status status-open">
-
-                ${job.status}
-
-              </span>
-
-            </p>
-
-
-          </div>
-
-        `).join("");
-
-    }
+      <p>
+        You have not created any requests yet.
+      </p>
+
+    `;
+
+    return;
+  }
+
+
+  myJobsList.innerHTML =
+    jobs.map(job => `
+
+      <div class="job-card">
+
+        <h3>
+          ${job.title}
+        </h3>
+
+        <p>
+          ${
+            job.description ||
+            "No description provided."
+          }
+        </p>
+
+        <p>
+          <strong>Service:</strong>
+          ${job.service_category}
+        </p>
+
+        <p>
+          <strong>Location:</strong>
+          ${
+            job.location_area ||
+            "Not specified"
+          }
+        </p>
+
+        <p>
+          <strong>Preferred date:</strong>
+          ${
+            job.preferred_date ||
+            "Flexible"
+          }
+        </p>
+
+        <p>
+          <strong>Preferred time:</strong>
+          ${
+            job.preferred_time ||
+            "Flexible"
+          }
+        </p>
+
+        <p>
+          <strong>Billing:</strong>
+          ${job.billing_type}
+        </p>
+
+        <p>
+          <strong>Status:</strong>
+
+          <span class="status status-open">
+            ${job.status}
+          </span>
+
+        </p>
+
+      </div>
+
+    `).join("");
+
+}
 
 
     /* =========================
