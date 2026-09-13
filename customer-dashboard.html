@@ -577,9 +577,8 @@
   myJobsList.innerHTML =
     "<p>Loading your requests...</p>";
 
-
   /*
-    Get the current saved session
+    Get current customer session
   */
 
   const {
@@ -588,12 +587,10 @@
   } =
     await supabaseClient.auth.getSession();
 
-
   console.log(
     "CUSTOMER REQUEST SESSION:",
     sessionData
   );
-
 
   if (
     sessionError ||
@@ -608,10 +605,8 @@
     return;
   }
 
-
   const user =
     sessionData.session.user;
-
 
   console.log(
     "Loading jobs for customer:",
@@ -625,7 +620,7 @@
 
   const {
     data: jobs,
-    error
+    error: jobsError
   } =
     await supabaseClient
       .from("jobs")
@@ -643,17 +638,17 @@
 
   console.log(
     "CUSTOMER JOB ERROR:",
-    error
+    jobsError
   );
 
 
-  if (error) {
+  if (jobsError) {
 
     myJobsList.innerHTML = `
 
       <p style="color:red;">
         Unable to load your requests:
-        ${error.message}
+        ${jobsError.message}
       </p>
 
     `;
@@ -676,68 +671,165 @@
   }
 
 
+  /*
+    Check professional matches
+    for each job
+  */
+
+  const jobIds =
+    jobs.map(job => job.id);
+
+
+  const {
+    data: matches,
+    error: matchesError
+  } =
+    await supabaseClient
+      .from("job_matches")
+      .select(
+        "job_id, professional_id, status"
+      )
+      .in("job_id", jobIds);
+
+
+  console.log(
+    "CUSTOMER JOB MATCHES:",
+    matches
+  );
+
+  console.log(
+    "CUSTOMER MATCH ERROR:",
+    matchesError
+  );
+
+
+  /*
+    If there is an error loading matches,
+    still show the customer's jobs.
+  */
+
+  if (matchesError) {
+
+    console.error(
+      "Could not load job matches:",
+      matchesError
+    );
+
+  }
+
+
+  /*
+    Display jobs
+  */
+
   myJobsList.innerHTML =
-    jobs.map(job => `
+    jobs.map(job => {
 
-      <div class="job-card">
+      const match =
+        matches
+          ? matches.find(
+              item =>
+                item.job_id === job.id
+            )
+          : null;
 
-        <h3>
-          ${job.title}
-        </h3>
 
-        <p>
-          ${
-            job.description ||
-            "No description provided."
-          }
-        </p>
+      let professionalStatus =
+        "Waiting for a professional";
 
-        <p>
-          <strong>Service:</strong>
-          ${job.service_category}
-        </p>
 
-        <p>
-          <strong>Location:</strong>
-          ${
-            job.location_area ||
-            "Not specified"
-          }
-        </p>
+      if (match) {
 
-        <p>
-          <strong>Preferred date:</strong>
-          ${
-            job.preferred_date ||
-            "Flexible"
-          }
-        </p>
+        if (
+          match.status === "accepted"
+        ) {
 
-        <p>
-          <strong>Preferred time:</strong>
-          ${
-            job.preferred_time ||
-            "Flexible"
-          }
-        </p>
+          professionalStatus =
+            "Professional accepted this job";
 
-        <p>
-          <strong>Billing:</strong>
-          ${job.billing_type}
-        </p>
+        }
+        else {
 
-        <p>
-          <strong>Status:</strong>
+          professionalStatus =
+            "Professional has been matched";
 
-          <span class="status status-open">
-            ${job.status}
-          </span>
+        }
 
-        </p>
+      }
 
-      </div>
 
-    `).join("");
+      return `
+
+        <div class="job-card">
+
+          <h3>
+            ${job.title}
+          </h3>
+
+          <p>
+            ${
+              job.description ||
+              "No description provided."
+            }
+          </p>
+
+          <p>
+            <strong>Service:</strong>
+            ${job.service_category}
+          </p>
+
+          <p>
+            <strong>Location:</strong>
+            ${
+              job.location_area ||
+              "Not specified"
+            }
+          </p>
+
+          <p>
+            <strong>Preferred date:</strong>
+            ${
+              job.preferred_date ||
+              "Flexible"
+            }
+          </p>
+
+          <p>
+            <strong>Preferred time:</strong>
+            ${
+              job.preferred_time ||
+              "Flexible"
+            }
+          </p>
+
+          <p>
+            <strong>Billing:</strong>
+            ${job.billing_type}
+          </p>
+
+          <p>
+            <strong>Status:</strong>
+
+            <span class="status status-open">
+              ${job.status}
+            </span>
+
+          </p>
+
+          <p>
+            <strong>Professional:</strong>
+
+            <span>
+              ${professionalStatus}
+            </span>
+
+          </p>
+
+        </div>
+
+      `;
+
+    }).join("");
 
 }
 
