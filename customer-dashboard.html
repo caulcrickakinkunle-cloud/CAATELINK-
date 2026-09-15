@@ -566,7 +566,16 @@
 
 
  async function loadMyJobs() {
+console.log("TESTING SERVICE_REQUESTS TABLE");
 
+const { data: testData, error: testError } =
+  await supabaseClient
+    .from("service_requests")
+    .select("*")
+    .limit(1);
+
+console.log("SERVICE REQUESTS TEST DATA:", testData);
+console.log("SERVICE REQUESTS TEST ERROR:", testError);
   const myJobsList =
     document.getElementById("myJobsList");
 
