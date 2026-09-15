@@ -1225,101 +1225,95 @@
 
     async function acceptJob(requestId) {
 
-      const {
-        data: { user },
-        error: userError
-      } =
-        await supabaseClient.auth.getUser();
+  const {
+    data: { user },
+    error: userError
+  } = await supabaseClient.auth.getUser();
 
 
-      if (userError || !user) {
+  if (userError || !user) {
 
-        showNotification(
-          "Please sign in again."
-        );
+    showNotification(
+      "Please sign in again."
+    );
 
-        return;
-
-      }
-
-
-      showNotification(
-        "Accepting request..."
-      );
+    return;
+  }
 
 
-      /*
-        FOR NOW:
-
-        We only change the request
-        from pending → accepted.
-
-        We will build the professional
-        assignment / quotation system
-        after this test works.
-      */
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-
-          .from("service_requests")
-
-          .update({
-            status: "accepted"
-          })
-
-          .eq(
-            "id",
-            requestId
-          )
-
-          .eq(
-            "status",
-            "pending"
-          )
-
-          .select()
-          .single();
+  showNotification(
+    "Accepting request..."
+  );
 
 
-      if (error) {
+  const {
+    data,
+    error
+  } = await supabaseClient
 
-        console.error(
-          "Accept request error:",
-          error
-        );
+    .from("service_requests")
 
+    .update({
+      status: "accepted"
+    })
 
-        showNotification(
-          "Could not accept request: " +
-          error.message
-        );
+    .eq("id", requestId)
 
-        return;
+    .eq("status", "pending")
 
-      }
-
-
-      console.log(
-        "Request accepted:",
-        data
-      );
+    .select();
 
 
-      closeJobDetails();
+  console.log(
+    "ACCEPT RESULT:",
+    data
+  );
+
+  console.log(
+    "ACCEPT ERROR:",
+    error
+  );
 
 
-      showNotification(
-        "Request accepted successfully!"
-      );
+  if (error) {
+
+    console.error(
+      "Accept request error:",
+      error
+    );
+
+    showNotification(
+      "Could not accept request: " +
+      error.message
+    );
+
+    return;
+  }
 
 
-      await loadOpenJobs();
+  if (!data || data.length === 0) {
 
-    }
+    showNotification(
+      "This request is no longer available."
+    );
+
+    await loadOpenJobs();
+
+    return;
+  }
+
+
+  closeJobDetails();
+
+
+  showNotification(
+    "Request accepted successfully!"
+  );
+
+
+  await loadOpenJobs();
+
+}
 
 
 
