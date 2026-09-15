@@ -756,195 +756,62 @@
     ========================= */
 
 
-    async function submitJob(event) {
-
-
-      event.preventDefault();
-
-
-      const button =
-        document.getElementById(
-          "submitJobButton"
-        );
-
-
-      const serviceCategory =
-        document.getElementById(
-          "serviceCategory"
-        ).value;
-
-
-      const jobTitle =
-        document.getElementById(
-          "jobTitle"
-        ).value.trim();
-
-
-      const jobDescription =
-        document.getElementById(
-          "jobDescription"
-        ).value.trim();
-
-
-      const locationArea =
-        document.getElementById(
-          "locationArea"
-        ).value.trim();
-
-
-      const preferredDate =
-        document.getElementById(
-          "preferredDate"
-        ).value;
-
-
-      const preferredTime =
-        document.getElementById(
-          "preferredTime"
-        ).value.trim();
-
-
-      const billingType =
-        document.getElementById(
-          "billingType"
-        ).value;
-
-
-      if (
-        !serviceCategory ||
-        !jobTitle ||
-        !jobDescription ||
-        !locationArea
-      ) {
-
-        showNotification(
-          "Please complete all required fields."
-        );
-
-        return;
-
-      }
-
-
-      const {
-        data: { user },
-        error: userError
-      } =
-        await supabaseClient.auth.getUser();
-
-
-      if (userError || !user) {
-
-        showNotification(
-          "Please sign in again."
-        );
-
-        return;
-
-      }
-
-
-      button.disabled = true;
-
-      button.textContent =
-        "Creating request...";
-
-
-      const {
-        data: job,
-        error
-      } =
-        await supabaseClient
-
-          .from("jobs")
-
-          .insert({
-
-            customer_id:
-              user.id,
-
-            title:
-              jobTitle,
-
-            description:
-              jobDescription,
-
-            service_category:
-              serviceCategory,
-
-            location_area:
-              locationArea,
-
-            preferred_date:
-              preferredDate ||
-              null,
-
-            preferred_time:
-              preferredTime ||
-              null,
-
-            billing_type:
-              billingType,
-
-            status:
-              "open"
-
-          })
-
-          .select()
-
-          .single();
-
-
-      if (error) {
-
-        console.error(
-          "Create job error:",
-          error
-        );
-
-
-        showNotification(
-          "Could not create request: " +
-          error.message
-        );
-
-
-        button.disabled = false;
-
-        button.textContent =
-          "Request a Professional";
-
-        return;
-
-      }
-
-
-      console.log(
-        "Created job:",
-        job
-      );
-
-
-      showNotification(
-        "Professional request created successfully!"
-      );
-
-
-      document.getElementById(
-        "jobForm"
-      ).reset();
-
-
-      button.disabled = false;
-
-      button.textContent =
-        "Request a Professional";
-
-
-      await loadMyJobs();
-
-    }
+    async function submitJob() {
+  const {
+    data: { session },
+    error: sessionError
+  } = await supabaseClient.auth.getSession();
+
+  if (sessionError || !session || !session.user) {
+    showNotification("Please sign in first.");
+    return;
+  }
+
+  const title = document.getElementById("jobTitle").value.trim();
+  const service = document.getElementById("jobService").value;
+  const description = document.getElementById("jobDescription").value.trim();
+  const location = document.getElementById("jobLocation").value.trim();
+  const preferredDate = document.getElementById("jobDate").value;
+  const preferredTime = document.getElementById("jobTime").value;
+  const billingType = document.getElementById("billingType").value;
+
+  if (!title || !service || !description || !location) {
+    showNotification("Please complete all required fields.");
+    return;
+  }
+
+  showNotification("Submitting your request...");
+
+  const { data, error } = await supabaseClient
+    .from("service_requests")
+    .insert({
+      customer_id: session.user.id,
+      title: title,
+      service: service,
+      description: description,
+      location: location,
+      preferred_date: preferredDate || null,
+      preferred_time: preferredTime || null,
+      billing_type: billingType || null,
+      status: "pending"
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Submit request error:", error);
+    showNotification(error.message);
+    return;
+  }
+
+  console.log("Request created:", data);
+
+  showNotification("Request submitted successfully.");
+
+  document.getElementById("jobForm").reset();
+
+  await loadMyJobs();
+}
 
 
     /* =========================
