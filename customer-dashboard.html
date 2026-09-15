@@ -565,188 +565,175 @@
     ========================= */
 
 
- async function submitJob(event) {
+ async function loadMyJobs() {
 
-  event.preventDefault();
+  const myJobsList =
+    document.getElementById("myJobsList");
 
-  const button =
-    document.getElementById(
-      "submitJobButton"
-    );
+  if (!myJobsList) {
+    return;
+  }
 
-  const serviceCategory =
-    document.getElementById(
-      "serviceCategory"
-    ).value;
+  myJobsList.innerHTML =
+    "<p>Loading your requests...</p>";
 
-  const jobTitle =
-    document.getElementById(
-      "jobTitle"
-    ).value.trim();
 
-  const jobDescription =
-    document.getElementById(
-      "jobDescription"
-    ).value.trim();
+  /*
+    Get saved customer session
+  */
 
-  const locationArea =
-    document.getElementById(
-      "locationArea"
-    ).value.trim();
-
-  const preferredDate =
-    document.getElementById(
-      "preferredDate"
-    ).value;
-
-  const preferredTime =
-    document.getElementById(
-      "preferredTime"
-    ).value.trim();
-
-  const billingType =
-    document.getElementById(
-      "billingType"
-    ).value;
+  const {
+    data: sessionData,
+    error: sessionError
+  } =
+    await supabaseClient.auth.getSession();
 
 
   if (
-    !serviceCategory ||
-    !jobTitle ||
-    !jobDescription ||
-    !locationArea
+    sessionError ||
+    !sessionData ||
+    !sessionData.session ||
+    !sessionData.session.user
   ) {
 
-    showNotification(
-      "Please complete all required fields."
-    );
+    myJobsList.innerHTML =
+      "<p>Please sign in again.</p>";
 
     return;
   }
 
 
-  /*
-    Get logged-in customer
-  */
-
-  const {
-    data: { user },
-    error: userError
-  } =
-    await supabaseClient.auth.getUser();
-
-
-  if (userError || !user) {
-
-    showNotification(
-      "Please sign in again."
-    );
-
-    return;
-  }
-
-
-  button.disabled = true;
-
-  button.textContent =
-    "Creating request...";
+  const user =
+    sessionData.session.user;
 
 
   /*
-    Create request inside
-    service_requests
+    Load requests belonging to
+    this customer
   */
 
   const {
-    data: request,
-    error
+    data: requests,
+    error: requestsError
   } =
     await supabaseClient
       .from("service_requests")
-      .insert({
-
-        customer_id:
-          user.id,
-
-        title:
-          jobTitle,
-
-        service:
-          serviceCategory,
-
-        description:
-          jobDescription,
-
-        location:
-          locationArea,
-
-        preferred_date:
-          preferredDate ||
-          null,
-
-        preferred_time:
-          preferredTime ||
-          null,
-
-        billing_type:
-          billingType,
-
-        status:
-          "pending"
-
-      })
-      .select()
-      .single();
+      .select("*")
+      .eq("customer_id", user.id)
+      .order("created_at", {
+        ascending: false
+      });
 
 
-  if (error) {
+  console.log(
+    "CUSTOMER REQUESTS:",
+    requests
+  );
 
-    console.error(
-      "Create request error:",
-      error
-    );
+  console.log(
+    "CUSTOMER REQUESTS ERROR:",
+    requestsError
+  );
 
-    showNotification(
-      "Could not create request: " +
-      error.message
-    );
 
-    button.disabled = false;
+  if (requestsError) {
 
-    button.textContent =
-      "Request a Professional";
+    myJobsList.innerHTML = `
+      <p style="color:red;">
+        Unable to load your requests:
+        ${requestsError.message}
+      </p>
+    `;
 
     return;
   }
 
 
-  console.log(
-    "Created service request:",
-    request
-  );
+  if (!requests || requests.length === 0) {
 
+    myJobsList.innerHTML = `
+      <p>
+        You have not created any requests yet.
+      </p>
+    `;
 
-  showNotification(
-    "Professional request created successfully!"
-  );
-
-
-  document
-    .getElementById("jobForm")
-    .reset();
-
-
-  button.disabled = false;
-
-  button.textContent =
-    "Request a Professional";
+    return;
+  }
 
 
   /*
-    Reload customer's requests
+    Display requests
   */
 
-  await loadMyJobs();
+  myJobsList.innerHTML =
+    requests.map(request => `
+
+      <div class="job-card">
+
+        <h3>
+          ${request.title || "Service Request"}
+        </h3>
+
+
+        <p>
+          ${
+            request.description ||
+            "No description provided."
+          }
+        </p>
+
+
+        <p>
+          <strong>Service:</strong>
+          ${request.service || "Not specified"}
+        </p>
+
+
+        <p>
+          <strong>Location:</strong>
+          ${request.location || "Not specified"}
+        </p>
+
+
+        <p>
+          <strong>Preferred date:</strong>
+          ${
+            request.preferred_date ||
+            "Flexible"
+          }
+        </p>
+
+
+        <p>
+          <strong>Preferred time:</strong>
+          ${
+            request.preferred_time ||
+            "Flexible"
+          }
+        </p>
+
+
+        <p>
+          <strong>Billing:</strong>
+          ${
+            request.billing_type ||
+            "Not specified"
+          }
+        </p>
+
+
+        <p>
+          <strong>Status:</strong>
+
+          <span class="status">
+            ${request.status || "pending"}
+          </span>
+
+        </p>
+
+      </div>
+
+    `).join("");
 
 }
 
