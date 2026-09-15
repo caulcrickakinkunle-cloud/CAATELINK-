@@ -1224,42 +1224,28 @@
     */
 
     async function acceptJob(requestId) {
-console.log("ACCEPT REQUEST ID:", requestId);
+
   const {
     data: { user },
     error: userError
   } = await supabaseClient.auth.getUser();
 
-
   if (userError || !user) {
-
     showNotification("Please sign in again.");
-
     return;
   }
 
-
   showNotification("Accepting request...");
 
-
   const { error } = await supabaseClient
-
-    .from("service_requests")
-
-    .update({
+    .from("request_assignments")
+    .insert({
+      request_id: requestId,
+      professional_id: user.id,
       status: "accepted"
-    })
+    });
 
-    .eq("id", requestId)
-
-    .eq("status", "pending");
-
-
-  console.log(
-    "ACCEPT ERROR:",
-    error
-  );
-
+  console.log("ASSIGNMENT ERROR:", error);
 
   if (error) {
 
@@ -1276,17 +1262,13 @@ console.log("ACCEPT REQUEST ID:", requestId);
     return;
   }
 
-
   closeJobDetails();
-
 
   showNotification(
     "Request accepted successfully!"
   );
 
-
   await loadOpenJobs();
-
 }
 
 
