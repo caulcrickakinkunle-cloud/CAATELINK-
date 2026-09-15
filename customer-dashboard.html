@@ -12,145 +12,217 @@
 
   <title>Customer Dashboard | CAATELINK</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
   <style>
+
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f7f8;
-      color: #222;
+      background: #f5f7fa;
+      color: #111827;
     }
 
     header {
-      background: #0b8f55;
+      background: #111827;
       color: white;
-      padding: 18px 20px;
+      padding: 16px 20px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      gap: 15px;
     }
 
-    header h1 {
-      margin: 0;
+    .brand {
       font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
-    header button {
-      background: white;
-      color: #0b8f55;
+    .sign-out {
       border: none;
+      background: #ef4444;
+      color: white;
       padding: 10px 15px;
       border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 25px auto;
-      padding: 0 15px;
+    main {
+      width: 100%;
+      max-width: 850px;
+      margin: auto;
+      padding: 25px 16px 50px;
+    }
+
+    .welcome {
+      margin-bottom: 25px;
+    }
+
+    .welcome h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    .welcome p {
+      margin: 0;
+      color: #6b7280;
     }
 
     .card {
       background: white;
+      border-radius: 14px;
       padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
     }
 
     .card h2 {
       margin-top: 0;
+      font-size: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
     }
 
     label {
       display: block;
-      margin-top: 14px;
-      margin-bottom: 6px;
-      font-weight: bold;
+      margin-bottom: 7px;
+      font-weight: 600;
+      font-size: 14px;
     }
 
     input,
     textarea,
     select {
       width: 100%;
-      box-sizing: border-box;
       padding: 12px;
-      border: 1px solid #ccc;
+      border: 1px solid #d1d5db;
       border-radius: 8px;
       font-size: 15px;
+      background: white;
     }
 
     textarea {
-      min-height: 100px;
+      min-height: 110px;
       resize: vertical;
     }
 
-    .primary-button {
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #2563eb;
+    }
+
+    .submit-button {
       width: 100%;
-      margin-top: 20px;
-      padding: 13px;
-      background: #0b8f55;
-      color: white;
       border: none;
-      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      padding: 14px;
+      border-radius: 9px;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    .primary-button:disabled {
+    .submit-button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
 
-    .job-card {
-      border: 1px solid #ddd;
+    .request-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
       padding: 16px;
       margin-bottom: 15px;
-      border-radius: 10px;
-      background: #fff;
+      background: #fafafa;
     }
 
-    .job-card h3 {
-      margin-top: 0;
-      color: #0b8f55;
+    .request-card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
     }
 
-    .job-card p {
+    .request-card p {
       margin: 7px 0;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .status {
       display: inline-block;
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: 20px;
-      background: #eee;
-      font-size: 13px;
-      font-weight: bold;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: capitalize;
     }
 
-    .status-open {
-      background: #dff7e9;
-      color: #08753f;
+    .empty {
+      color: #6b7280;
+      text-align: center;
+      padding: 20px 5px;
     }
 
-    #caatelinkNotification {
+    #notification {
       position: fixed;
       top: 20px;
       right: 20px;
+      left: 20px;
+      max-width: 420px;
+      margin: auto;
       z-index: 99999;
-      padding: 14px 20px;
-      background: #111;
-      color: #fff;
+      padding: 14px 18px;
       border-radius: 10px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      background: #111827;
+      color: white;
+      text-align: center;
       font-size: 14px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      display: none;
+    }
+
+    .loading {
+      color: #6b7280;
+      text-align: center;
+      padding: 20px;
+    }
+
+    @media (max-width: 600px) {
+
+      header {
+        padding: 14px 15px;
+      }
+
+      .brand {
+        font-size: 19px;
+      }
+
+      .sign-out {
+        padding: 9px 12px;
+        font-size: 13px;
+      }
+
+      main {
+        padding: 20px 12px 40px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .welcome h1 {
+        font-size: 23px;
+      }
+
     }
 
   </style>
@@ -161,31 +233,33 @@
 <body>
 
 
-  <!-- HEADER -->
+  <div id="notification"></div>
+
 
   <header>
 
-    <h1>
+    <div class="brand">
       CAATELINK
-    </h1>
+    </div>
 
-    <button onclick="signOutUser()">
+    <button
+      class="sign-out"
+      onclick="signOutUser()"
+    >
       Sign Out
     </button>
 
   </header>
 
 
-  <main class="container">
+  <main>
 
 
-    <!-- WELCOME -->
+    <section class="welcome">
 
-    <section class="card">
-
-      <h2 id="welcomeName">
-        Welcome, Customer
-      </h2>
+      <h1>
+        Welcome, <span id="customerName">Customer</span>
+      </h1>
 
       <p>
         Request trusted professionals for your technical needs.
@@ -194,7 +268,6 @@
     </section>
 
 
-    <!-- REQUEST A PROFESSIONAL -->
 
     <section class="card">
 
@@ -203,141 +276,169 @@
       </h2>
 
 
-      <form id="jobForm">
+      <form id="requestForm">
 
 
-        <label for="serviceCategory">
-          Service
-        </label>
+        <div class="form-group">
 
-        <select
-          id="serviceCategory"
-          required
-        >
+          <label for="service">
+            Service
+          </label>
 
-          <option value="">
-            Select a service
-          </option>
+          <select
+            id="service"
+            required
+          >
 
-          <option value="Electrical">
-            Electrical
-          </option>
+            <option value="">
+              Select a service
+            </option>
 
-          <option value="Automation">
-            Automation
-          </option>
+            <option value="Electrical">
+              Electrical
+            </option>
 
-          <option value="Smart Lock">
-            Smart Lock
-          </option>
+            <option value="Automation">
+              Automation
+            </option>
 
-          <option value="Solar">
-            Solar
-          </option>
+            <option value="Smart Lock">
+              Smart Lock
+            </option>
 
-          <option value="Plumbing">
-            Plumbing
-          </option>
+            <option value="Solar">
+              Solar
+            </option>
 
-          <option value="Air Conditioning">
-            Air Conditioning
-          </option>
+            <option value="Appliance Installation">
+              Appliance Installation
+            </option>
 
-          <option value="Other">
-            Other
-          </option>
+            <option value="Other Technical Service">
+              Other Technical Service
+            </option>
 
-        </select>
+          </select>
 
-
-        <label for="jobTitle">
-          Job Title
-        </label>
-
-        <input
-          type="text"
-          id="jobTitle"
-          placeholder="e.g. Install 4 electrical sockets"
-          required
-        >
+        </div>
 
 
-        <label for="jobDescription">
-          Description
-        </label>
 
-        <textarea
-          id="jobDescription"
-          placeholder="Describe what you need done..."
-          required
-        ></textarea>
+        <div class="form-group">
 
+          <label for="jobTitle">
+            Job Title
+          </label>
 
-        <label for="locationArea">
-          Area
-        </label>
+          <input
+            type="text"
+            id="jobTitle"
+            placeholder="e.g. Install 4 electrical sockets"
+            required
+          >
 
-        <input
-          type="text"
-          id="locationArea"
-          placeholder="e.g. Ikeja, Lagos"
-          required
-        >
+        </div>
 
 
-        <label for="preferredDate">
-          Preferred Date
-        </label>
 
-        <input
-          type="date"
-          id="preferredDate"
-        >
+        <div class="form-group">
 
+          <label for="description">
+            Description
+          </label>
 
-        <label for="preferredTime">
-          Preferred Time
-        </label>
+          <textarea
+            id="description"
+            placeholder="Describe what you need the professional to do..."
+            required
+          ></textarea>
 
-        <input
-          type="text"
-          id="preferredTime"
-          placeholder="e.g. 10:00am"
-        >
+        </div>
 
 
-        <label for="billingType">
-          Billing Preference
-        </label>
 
-        <select
-          id="billingType"
-          required
-        >
+        <div class="form-group">
 
-          <option value="fixed_quote">
-            Fixed Quote
-          </option>
+          <label for="location">
+            Area
+          </label>
 
-          <option value="hourly_labour">
-            Hourly Labour
-          </option>
+          <input
+            type="text"
+            id="location"
+            placeholder="e.g. Ikeja"
+            required
+          >
 
-          <option value="inspection_first">
-            Inspection First
-          </option>
+        </div>
 
-          <option value="materials_workmanship">
-            Materials + Workmanship
-          </option>
 
-        </select>
+
+        <div class="form-group">
+
+          <label for="preferredDate">
+            Preferred Date
+          </label>
+
+          <input
+            type="date"
+            id="preferredDate"
+          >
+
+        </div>
+
+
+
+        <div class="form-group">
+
+          <label for="preferredTime">
+            Preferred Time
+          </label>
+
+          <input
+            type="text"
+            id="preferredTime"
+            placeholder="e.g. 10:00am"
+          >
+
+        </div>
+
+
+
+        <div class="form-group">
+
+          <label for="billingType">
+            Billing Preference
+          </label>
+
+          <select id="billingType">
+
+            <option value="fixed_quote">
+              Fixed Quote
+            </option>
+
+            <option value="hourly_labour">
+              Hourly Labour
+            </option>
+
+            <option value="inspection_first">
+              Inspection First
+            </option>
+
+            <option value="materials_workmanship">
+              Materials + Workmanship
+            </option>
+
+          </select>
+
+        </div>
+
 
 
         <button
           type="submit"
-          class="primary-button"
-          id="submitJobButton"
+          class="submit-button"
+          id="submitButton"
         >
           Request a Professional
         </button>
@@ -348,7 +449,6 @@
     </section>
 
 
-    <!-- MY REQUESTS -->
 
     <section class="card">
 
@@ -356,11 +456,11 @@
         My Requests
       </h2>
 
-      <div id="myJobsList">
+      <div id="myRequests">
 
-        <p>
+        <div class="loading">
           Loading your requests...
-        </p>
+        </div>
 
       </div>
 
@@ -370,7 +470,6 @@
   </main>
 
 
-  <!-- SUPABASE -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -378,23 +477,16 @@
   <script>
 
 
-    /* =========================
-       SUPABASE
-    ========================= */
-
+    /*
+      CAATELINK SUPABASE CONNECTION
+    */
 
     const SUPABASE_URL =
       "https://mkjvlotgilihlrgtanps.supabase.co";
 
 
-    /*
-      IMPORTANT:
-      Put the SAME publishable key
-      you already use in app.js here.
-    */
-
     const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_1iq8mtaSTBmRVhcLTUrlFw_RkQfw6Ix";
+      "sb_publishable_xNm6ENqQz6MinoNo0kB7wA_h0d7ZSo3";
 
 
     const supabaseClient =
@@ -404,421 +496,487 @@
       );
 
 
-    /* =========================
-       NOTIFICATION
-    ========================= */
 
+    /*
+      NOTIFICATION
+    */
 
     function showNotification(message) {
 
-      const existing =
-        document.getElementById(
-          "caatelinkNotification"
-        );
-
-      if (existing) {
-        existing.remove();
-      }
-
-
       const notification =
-        document.createElement("div");
+        document.getElementById("notification");
 
+      notification.textContent = message;
 
-      notification.id =
-        "caatelinkNotification";
-
-
-      notification.textContent =
-        message;
-
-
-      document.body.appendChild(
-        notification
-      );
-
+      notification.style.display = "block";
 
       setTimeout(() => {
 
-        notification.remove();
+        notification.style.display = "none";
 
-      }, 3000);
+      }, 3500);
 
     }
 
 
-    /* =========================
-       LOAD CUSTOMER DASHBOARD
-    ========================= */
 
+    /*
+      LOAD CUSTOMER DASHBOARD
+    */
 
     async function loadCustomerDashboard() {
 
-  console.log("Customer dashboard starting...");
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.getSession();
 
-  /*
-    Give Supabase a moment to restore
-    the login session from browser storage.
-  */
-  await new Promise(resolve => {
-    setTimeout(resolve, 800);
-  });
 
+      if (
+        error ||
+        !data ||
+        !data.session ||
+        !data.session.user
+      ) {
 
-  /*
-    First check the stored session.
-  */
-  const {
-    data: sessionData,
-    error: sessionError
-  } = await supabaseClient.auth.getSession();
+        window.location.href = "index.html";
 
+        return;
 
-  console.log(
-    "CUSTOMER SESSION:",
-    sessionData
-  );
+      }
 
-  console.log(
-    "SESSION ERROR:",
-    sessionError
-  );
 
+      const user =
+        data.session.user;
 
-  if (
-    sessionError ||
-    !sessionData ||
-    !sessionData.session ||
-    !sessionData.session.user
-  ) {
 
-    console.log(
-      "No customer session found."
-    );
+      /*
+        Get customer name
+      */
 
-    window.location.href =
-      "index.html";
+      const customerName =
+        user.user_metadata?.full_name ||
+        user.email ||
+        "Customer";
 
-    return;
-  }
 
+      document.getElementById(
+        "customerName"
+      ).textContent = customerName;
 
-  const user =
-    sessionData.session.user;
 
+      /*
+        Load requests
+      */
 
-  console.log(
-    "CUSTOMER LOGGED IN:",
-    user.id
-  );
+      await loadMyRequests();
 
+    }
 
-  /*
-    Load profile
-  */
 
-  const {
-    data: profile,
-    error: profileError
-  } =
-    await supabaseClient
-      .from("profiles")
-      .select("full_name, email")
-      .eq("id", user.id)
-      .maybeSingle();
 
+    /*
+      LOAD CUSTOMER REQUESTS
+    */
 
-  if (profileError) {
+    async function loadMyRequests() {
 
-    console.error(
-      "Profile error:",
-      profileError
-    );
+      const container =
+        document.getElementById("myRequests");
 
-  }
 
+      container.innerHTML =
+        '<div class="loading">Loading your requests...</div>';
 
-  if (profile) {
 
-    document.getElementById(
-      "welcomeName"
-    ).textContent =
-      "Welcome, " +
-      (
-        profile.full_name ||
-        "Customer"
-      );
+      const {
+        data: sessionData,
+        error: sessionError
+      } =
+        await supabaseClient.auth.getSession();
 
-  }
 
+      if (
+        sessionError ||
+        !sessionData ||
+        !sessionData.session
+      ) {
 
-  /*
-    Load customer's jobs
-  */
+        container.innerHTML =
+          '<div class="empty">Please sign in again.</div>';
 
-  await loadMyJobs();
+        return;
 
-}
+      }
 
-    /* =========================
-       LOAD MY JOBS
-    ========================= */
 
+      const user =
+        sessionData.session.user;
 
- async function loadMyJobs() {
-console.log("TESTING SERVICE_REQUESTS TABLE");
 
-const { data: testData, error: testError } =
-  await supabaseClient
-    .from("service_requests")
-    .select("*")
-    .limit(1);
+      const {
+        data: requests,
+        error
+      } =
+        await supabaseClient
+          .from("service_requests")
+          .select(
+            "id, title, service, description, location, preferred_date, preferred_time, billing_type, status, created_at"
+          )
+          .eq(
+            "customer_id",
+            user.id
+          )
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          );
+
+
+      if (error) {
+
+        console.error(
+          "LOAD REQUESTS ERROR:",
+          error
+        );
+
+
+        container.innerHTML = `
+          <div class="empty">
+
+            Unable to load your requests.
+
+            <br><br>
 
-console.log("SERVICE REQUESTS TEST DATA:", testData);
-console.log("SERVICE REQUESTS TEST ERROR:", testError);
-  const myJobsList =
-    document.getElementById("myJobsList");
+            ${error.message}
 
-  if (!myJobsList) {
-    return;
-  }
+          </div>
+        `;
 
-  myJobsList.innerHTML =
-    "<p>Loading your requests...</p>";
+        return;
 
+      }
 
-  /*
-    Get saved customer session
-  */
 
-  const {
-    data: sessionData,
-    error: sessionError
-  } =
-    await supabaseClient.auth.getSession();
+      if (
+        !requests ||
+        requests.length === 0
+      ) {
 
+        container.innerHTML = `
+          <div class="empty">
+            You have not created any requests yet.
+          </div>
+        `;
 
-  if (
-    sessionError ||
-    !sessionData ||
-    !sessionData.session ||
-    !sessionData.session.user
-  ) {
+        return;
 
-    myJobsList.innerHTML =
-      "<p>Please sign in again.</p>";
+      }
 
-    return;
-  }
 
+      container.innerHTML =
+        requests.map(request => `
 
-  const user =
-    sessionData.session.user;
+          <div class="request-card">
 
+            <h3>
+              ${escapeHtml(
+                request.title ||
+                "Technical Request"
+              )}
+            </h3>
 
-  /*
-    Load requests belonging to
-    this customer
-  */
+            <p>
+              ${escapeHtml(
+                request.description ||
+                "No description provided."
+              )}
+            </p>
 
-  const {
-    data: requests,
-    error: requestsError
-  } =
-    await supabaseClient
-      .from("service_requests")
-      .select("*")
-      .eq("customer_id", user.id)
-      .order("created_at", {
-        ascending: false
-      });
+            <p>
+              <strong>Service:</strong>
+              ${escapeHtml(
+                request.service ||
+                "Not specified"
+              )}
+            </p>
 
+            <p>
+              <strong>Location:</strong>
+              ${escapeHtml(
+                request.location ||
+                "Not specified"
+              )}
+            </p>
 
-  console.log(
-    "CUSTOMER REQUESTS:",
-    requests
-  );
+            <p>
+              <strong>Preferred date:</strong>
+              ${
+                request.preferred_date ||
+                "Flexible"
+              }
+            </p>
 
-  console.log(
-    "CUSTOMER REQUESTS ERROR:",
-    requestsError
-  );
+            <p>
+              <strong>Preferred time:</strong>
+              ${escapeHtml(
+                request.preferred_time ||
+                "Flexible"
+              )}
+            </p>
 
+            <p>
+              <strong>Billing:</strong>
+              ${escapeHtml(
+                request.billing_type ||
+                "Not specified"
+              )}
+            </p>
 
-  if (requestsError) {
+            <p>
+              <strong>Status:</strong>
 
-    myJobsList.innerHTML = `
-      <p style="color:red;">
-        Unable to load your requests:
-        ${requestsError.message}
-      </p>
-    `;
+              <span class="status">
+                ${escapeHtml(
+                  request.status ||
+                  "pending"
+                )}
+              </span>
 
-    return;
-  }
+            </p>
 
+          </div>
 
-  if (!requests || requests.length === 0) {
+        `).join("");
 
-    myJobsList.innerHTML = `
-      <p>
-        You have not created any requests yet.
-      </p>
-    `;
+    }
 
-    return;
-  }
 
 
-  /*
-    Display requests
-  */
+    /*
+      SUBMIT REQUEST
+    */
 
-  myJobsList.innerHTML =
-    requests.map(request => `
+    async function submitRequest(event) {
 
-      <div class="job-card">
+      event.preventDefault();
 
-        <h3>
-          ${request.title || "Service Request"}
-        </h3>
 
+      const submitButton =
+        document.getElementById(
+          "submitButton"
+        );
 
-        <p>
-          ${
-            request.description ||
-            "No description provided."
-          }
-        </p>
 
+      submitButton.disabled = true;
 
-        <p>
-          <strong>Service:</strong>
-          ${request.service || "Not specified"}
-        </p>
+      submitButton.textContent =
+        "Submitting...";
 
 
-        <p>
-          <strong>Location:</strong>
-          ${request.location || "Not specified"}
-        </p>
+      try {
 
+        const {
+          data: sessionData,
+          error: sessionError
+        } =
+          await supabaseClient.auth.getSession();
 
-        <p>
-          <strong>Preferred date:</strong>
-          ${
-            request.preferred_date ||
-            "Flexible"
-          }
-        </p>
 
+        if (
+          sessionError ||
+          !sessionData ||
+          !sessionData.session
+        ) {
 
-        <p>
-          <strong>Preferred time:</strong>
-          ${
-            request.preferred_time ||
-            "Flexible"
-          }
-        </p>
+          showNotification(
+            "Your session has expired. Please sign in again."
+          );
 
+          return;
 
-        <p>
-          <strong>Billing:</strong>
-          ${
-            request.billing_type ||
-            "Not specified"
-          }
-        </p>
+        }
 
 
-        <p>
-          <strong>Status:</strong>
+        const user =
+          sessionData.session.user;
 
-          <span class="status">
-            ${request.status || "pending"}
-          </span>
 
-        </p>
+        const service =
+          document
+            .getElementById("service")
+            .value
+            .trim();
 
-      </div>
 
-    `).join("");
+        const title =
+          document
+            .getElementById("jobTitle")
+            .value
+            .trim();
 
-}
 
+        const description =
+          document
+            .getElementById("description")
+            .value
+            .trim();
 
-    /* =========================
-       SUBMIT JOB
-    ========================= */
 
+        const location =
+          document
+            .getElementById("location")
+            .value
+            .trim();
 
-    async function submitJob() {
-  const {
-    data: { session },
-    error: sessionError
-  } = await supabaseClient.auth.getSession();
 
-  if (sessionError || !session || !session.user) {
-    showNotification("Please sign in first.");
-    return;
-  }
+        const preferredDate =
+          document
+            .getElementById("preferredDate")
+            .value;
 
-  const title = document.getElementById("jobTitle").value.trim();
-  const service = document.getElementById("jobService").value;
-  const description = document.getElementById("jobDescription").value.trim();
-  const location = document.getElementById("jobLocation").value.trim();
-  const preferredDate = document.getElementById("jobDate").value;
-  const preferredTime = document.getElementById("jobTime").value;
-  const billingType = document.getElementById("billingType").value;
 
-  if (!title || !service || !description || !location) {
-    showNotification("Please complete all required fields.");
-    return;
-  }
+        const preferredTime =
+          document
+            .getElementById("preferredTime")
+            .value
+            .trim();
 
-  showNotification("Submitting your request...");
 
-  const { data, error } = await supabaseClient
-    .from("service_requests")
-    .insert({
-      customer_id: session.user.id,
-      title: title,
-      service: service,
-      description: description,
-      location: location,
-      preferred_date: preferredDate || null,
-      preferred_time: preferredTime || null,
-      billing_type: billingType || null,
-      status: "pending"
-    })
-    .select()
-    .single();
+        const billingType =
+          document
+            .getElementById("billingType")
+            .value;
 
-  if (error) {
-    console.error("Submit request error:", error);
-    showNotification(error.message);
-    return;
-  }
 
-  console.log("Request created:", data);
+        if (
+          !service ||
+          !title ||
+          !description ||
+          !location
+        ) {
 
-  showNotification("Request submitted successfully.");
+          showNotification(
+            "Please complete all required fields."
+          );
 
-  document.getElementById("jobForm").reset();
+          return;
 
-  await loadMyJobs();
-}
+        }
 
 
-    /* =========================
-       SIGN OUT
-    ========================= */
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from("service_requests")
+            .insert({
 
+              customer_id:
+                user.id,
+
+              title:
+                title,
+
+              service:
+                service,
+
+              description:
+                description,
+
+              location:
+                location,
+
+              preferred_date:
+                preferredDate || null,
+
+              preferred_time:
+                preferredTime || null,
+
+              billing_type:
+                billingType || null,
+
+              status:
+                "pending"
+
+            })
+            .select()
+            .single();
+
+
+        if (error) {
+
+          console.error(
+            "SUBMIT REQUEST ERROR:",
+            error
+          );
+
+          showNotification(
+            error.message
+          );
+
+          return;
+
+        }
+
+
+        console.log(
+          "REQUEST CREATED:",
+          data
+        );
+
+
+        showNotification(
+          "Request submitted successfully."
+        );
+
+
+        document
+          .getElementById("requestForm")
+          .reset();
+
+
+        await loadMyRequests();
+
+
+      } finally {
+
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+          "Request a Professional";
+
+      }
+
+    }
+
+
+
+    /*
+      SIGN OUT
+    */
 
     async function signOutUser() {
 
+      const {
+        error
+      } =
+        await supabaseClient.auth.signOut();
 
-      await supabaseClient.auth.signOut();
+
+      if (error) {
+
+        showNotification(
+          error.message
+        );
+
+        return;
+
+      }
 
 
       window.location.href =
@@ -827,29 +985,46 @@ console.log("SERVICE REQUESTS TEST ERROR:", testError);
     }
 
 
-    /* =========================
-       FORM EVENT
-    ========================= */
 
+    /*
+      BASIC HTML SAFETY
+    */
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+
+    /*
+      FORM LISTENER
+    */
 
     document
-      .getElementById("jobForm")
+      .getElementById("requestForm")
       .addEventListener(
         "submit",
-        submitJob
+        submitRequest
       );
 
 
-    /* =========================
-       START DASHBOARD
-    ========================= */
 
+    /*
+      START DASHBOARD
+    */
 
     loadCustomerDashboard();
 
-
   </script>
+
 
 </body>
 
-</html>
+</html></html>
