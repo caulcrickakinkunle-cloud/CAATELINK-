@@ -150,17 +150,32 @@
       box-shadow: 0 5px 20px rgba(0,0,0,0.2);
       font-size: 14px;
     }
+
+    .status-pending {
+      color: #b77900;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .empty-message {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+    }
   </style>
 </head>
 
 <body>
 
   <header>
+
     <h1>CAATELINK</h1>
 
     <button onclick="signOutUser()">
       Sign Out
     </button>
+
   </header>
 
 
@@ -177,6 +192,7 @@
       <p>
         Manage your jobs, apprentices, materials and earnings.
       </p>
+
 
       <div class="availability">
 
@@ -213,11 +229,16 @@
       Nearby Jobs
     </h2>
 
+
     <div
       id="jobsList"
       class="jobs-container"
     >
-      <p>Checking for jobs...</p>
+
+      <p>
+        Checking for jobs...
+      </p>
+
     </div>
 
 
@@ -227,11 +248,15 @@
       Quick Actions
     </h2>
 
+
     <div class="quick-actions">
+
 
       <div class="quick-card">
 
-        <h3>📋 My Jobs</h3>
+        <h3>
+          📋 My Jobs
+        </h3>
 
         <p>
           View your active and completed jobs.
@@ -246,7 +271,9 @@
 
       <div class="quick-card">
 
-        <h3>🎓 Apprentices</h3>
+        <h3>
+          🎓 Apprentices
+        </h3>
 
         <p>
           Manage apprentices working with you.
@@ -261,7 +288,9 @@
 
       <div class="quick-card">
 
-        <h3>🏪 Materials</h3>
+        <h3>
+          🏪 Materials
+        </h3>
 
         <p>
           Find stores and request materials.
@@ -276,7 +305,9 @@
 
       <div class="quick-card">
 
-        <h3>💰 Wallet</h3>
+        <h3>
+          💰 Wallet
+        </h3>
 
         <p>
           View your earnings and transactions.
@@ -291,7 +322,9 @@
 
       <div class="quick-card">
 
-        <h3>💬 Messages</h3>
+        <h3>
+          💬 Messages
+        </h3>
 
         <p>
           Communicate with customers and apprentices.
@@ -302,6 +335,7 @@
         </button>
 
       </div>
+
 
     </div>
 
@@ -339,6 +373,7 @@
 
     </section>
 
+
   </main>
 
 
@@ -349,8 +384,15 @@
 
   <script>
 
+    /*
+      ==========================================
+      CAATELINK SUPABASE CONFIGURATION
+      ==========================================
+    */
+
     const SUPABASE_URL =
       "https://mkjvlotgilihlrgtanps.supabase.co";
+
 
     const SUPABASE_PUBLISHABLE_KEY =
       "sb_publishable_1iq8mtaSTBmRVhcLTUrlFw_RkQfw6Ix";
@@ -363,6 +405,13 @@
       );
 
 
+
+    /*
+      ==========================================
+      NOTIFICATION
+      ==========================================
+    */
+
     function showNotification(message) {
 
       const existing =
@@ -370,22 +419,28 @@
           "caatelinkNotification"
         );
 
+
       if (existing) {
         existing.remove();
       }
 
+
       const notification =
         document.createElement("div");
+
 
       notification.id =
         "caatelinkNotification";
 
+
       notification.textContent =
         message;
+
 
       document.body.appendChild(
         notification
       );
+
 
       setTimeout(() => {
 
@@ -395,6 +450,42 @@
 
     }
 
+
+
+    /*
+      ==========================================
+      ESCAPE HTML
+      ==========================================
+    */
+
+    function escapeHtml(value) {
+
+      if (value === null || value === undefined) {
+        return "";
+      }
+
+
+      return String(value)
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+
+    /*
+      ==========================================
+      LOAD PROFESSIONAL DASHBOARD
+      ==========================================
+    */
 
     async function loadProfessionalDashboard() {
 
@@ -415,7 +506,15 @@
       }
 
 
-      // LOAD PROFILE
+      console.log(
+        "Professional logged in:",
+        user.id
+      );
+
+
+      /*
+        LOAD PROFILE
+      */
 
       const {
         data: profile,
@@ -465,10 +564,20 @@
           profile.email ||
           user.email;
 
+      } else {
+
+        document.getElementById(
+          "profileEmail"
+        ).textContent =
+          user.email || "";
+
       }
 
 
-      // LOAD WALLET
+
+      /*
+        LOAD WALLET
+      */
 
       const {
         data: wallet,
@@ -518,6 +627,13 @@
     }
 
 
+
+    /*
+      ==========================================
+      LOAD PENDING SERVICE REQUESTS
+      ==========================================
+    */
+
     async function loadOpenJobs() {
 
       const jobsList =
@@ -541,6 +657,11 @@
         "<p>Checking for jobs...</p>";
 
 
+
+      /*
+        GET CURRENT PROFESSIONAL
+      */
+
       const {
         data: { user },
         error: userError
@@ -554,6 +675,7 @@
           "USER ERROR:",
           userError
         );
+
 
         jobsList.innerHTML =
           "<p>Professional login session not found.</p>";
@@ -569,19 +691,36 @@
       );
 
 
+
+      /*
+        GET PENDING REQUESTS
+      */
+
       const {
-        data: jobs,
+        data: requests,
         error
       } =
         await supabaseClient
 
-          .from("jobs")
+          .from("service_requests")
 
-          .select("*")
+          .select(`
+            id,
+            customer_id,
+            title,
+            service,
+            description,
+            location,
+            preferred_date,
+            preferred_time,
+            billing_type,
+            status,
+            created_at
+          `)
 
           .eq(
             "status",
-            "open"
+            "pending"
           )
 
           .order(
@@ -593,21 +732,24 @@
 
 
       console.log(
-        "JOBS:",
-        jobs
+        "SERVICE REQUESTS:",
+        requests
       );
 
+
       console.log(
-        "JOBS ERROR:",
+        "SERVICE REQUESTS ERROR:",
         error
       );
+
 
 
       if (error) {
 
         jobsList.innerHTML = `
           <p style="color:red;">
-            Jobs error: ${error.message}
+            Requests error:
+            ${escapeHtml(error.message)}
           </p>
         `;
 
@@ -616,71 +758,158 @@
       }
 
 
-      if (!jobs || jobs.length === 0) {
 
-        jobsList.innerHTML =
-          "<p>No open jobs available.</p>";
+      /*
+        NO REQUESTS
+      */
+
+      if (
+        !requests ||
+        requests.length === 0
+      ) {
+
+        jobsList.innerHTML = `
+          <div class="empty-message">
+            <p>
+              No pending jobs available.
+            </p>
+          </div>
+        `;
 
         return;
 
       }
 
-window.caatelinkJobs = jobs;
+
+
+      /*
+        SAVE REQUESTS FOR VIEW JOB
+      */
+
+      window.caatelinkJobs =
+        requests;
+
+
+
+      /*
+        DISPLAY REQUESTS
+      */
+
       jobsList.innerHTML =
-        jobs.map(job => `
+
+        requests.map(request => `
 
           <div class="job-card">
 
             <h3>
-              ${job.title}
+              ${escapeHtml(request.title)}
             </h3>
+
 
             <p>
               ${
-                job.description ||
+                escapeHtml(
+                  request.description
+                ) ||
                 "No description provided."
               }
             </p>
 
-            <p>
-              <strong>Service:</strong>
-              ${job.service_category}
-            </p>
 
             <p>
-              <strong>Location:</strong>
+
+              <strong>
+                Service:
+              </strong>
+
+              ${escapeHtml(request.service)}
+
+            </p>
+
+
+            <p>
+
+              <strong>
+                Location:
+              </strong>
+
               ${
-                job.location_area ||
+                escapeHtml(
+                  request.location
+                ) ||
                 "Not specified"
               }
+
             </p>
 
+
             <p>
-              <strong>Date:</strong>
+
+              <strong>
+                Date:
+              </strong>
+
               ${
-                job.preferred_date ||
+                escapeHtml(
+                  request.preferred_date
+                ) ||
                 "Flexible"
               }
+
             </p>
 
+
             <p>
-              <strong>Time:</strong>
+
+              <strong>
+                Time:
+              </strong>
+
               ${
-                job.preferred_time ||
+                escapeHtml(
+                  request.preferred_time
+                ) ||
                 "Flexible"
               }
+
             </p>
 
+
             <p>
-              <strong>Billing:</strong>
-              ${job.billing_type}
+
+              <strong>
+                Billing:
+              </strong>
+
+              ${
+                escapeHtml(
+                  request.billing_type
+                ) ||
+                "Not specified"
+              }
+
             </p>
+
+
+            <p>
+
+              <strong>
+                Status:
+              </strong>
+
+              <span class="status-pending">
+                ${escapeHtml(request.status)}
+              </span>
+
+            </p>
+
 
             <button
-              onclick="viewJob('${job.id}')"
+              onclick="viewJob('${request.id}')"
             >
-              View Job
+              View Request
             </button>
+
 
           </div>
 
@@ -689,225 +918,440 @@ window.caatelinkJobs = jobs;
     }
 
 
-    function viewJob(jobId) {
 
-  const job = window.caatelinkJobs.find(
-    job => job.id === jobId
-  );
+    /*
+      ==========================================
+      VIEW REQUEST
+      ==========================================
+    */
 
-  if (!job) {
-    showNotification("Job could not be found.");
-    return;
-  }
+    function viewJob(requestId) {
 
-  const existingModal =
-    document.getElementById("jobDetailsModal");
+      const request =
+        window.caatelinkJobs.find(
+          item => item.id === requestId
+        );
 
-  if (existingModal) {
-    existingModal.remove();
-  }
 
-  const modal =
-    document.createElement("div");
+      if (!request) {
 
-  modal.id = "jobDetailsModal";
+        showNotification(
+          "Request could not be found."
+        );
 
-  modal.style.position = "fixed";
-  modal.style.top = "0";
-  modal.style.left = "0";
-  modal.style.width = "100%";
-  modal.style.height = "100%";
-  modal.style.background = "rgba(0,0,0,0.6)";
-  modal.style.zIndex = "99998";
-  modal.style.display = "flex";
-  modal.style.alignItems = "center";
-  modal.style.justifyContent = "center";
-  modal.style.padding = "20px";
-  modal.style.boxSizing = "border-box";
+        return;
 
-  modal.innerHTML = `
+      }
 
-    <div style="
-      background:white;
-      width:100%;
-      max-width:550px;
-      max-height:90vh;
-      overflow-y:auto;
-      border-radius:15px;
-      padding:25px;
-      box-sizing:border-box;
-    ">
 
-      <h2 style="margin-top:0;">
-        ${job.title}
-      </h2>
+      const existingModal =
+        document.getElementById(
+          "jobDetailsModal"
+        );
 
-      <p>
-        <strong>Service:</strong>
-        ${job.service_category}
-      </p>
 
-      <p>
-        <strong>Description:</strong><br>
-        ${job.description || "No description provided."}
-      </p>
+      if (existingModal) {
+        existingModal.remove();
+      }
 
-      <p>
-        <strong>Location:</strong>
-        ${job.location_area || "Not specified"}
-      </p>
 
-      <p>
-        <strong>Date:</strong>
-        ${job.preferred_date || "Flexible"}
-      </p>
+      const modal =
+        document.createElement("div");
 
-      <p>
-        <strong>Time:</strong>
-        ${job.preferred_time || "Flexible"}
-      </p>
 
-      <p>
-        <strong>Billing:</strong>
-        ${job.billing_type}
-      </p>
+      modal.id =
+        "jobDetailsModal";
 
-      <div style="
-        display:flex;
-        gap:10px;
-        margin-top:25px;
-      ">
 
-        <button
-          onclick="acceptJob('${job.id}')"
-          style="
-            flex:1;
-            padding:12px;
-            background:#0b8f55;
-            color:white;
-            border:none;
-            border-radius:8px;
-            font-weight:bold;
-          "
-        >
-          Accept Job
-        </button>
+      modal.style.position =
+        "fixed";
 
-        <button
-          onclick="declineJob('${job.id}')"
-          style="
-            flex:1;
-            padding:12px;
-            background:#ddd;
-            color:#222;
-            border:none;
-            border-radius:8px;
-          "
-        >
-          Decline
-        </button>
+      modal.style.top =
+        "0";
 
-      </div>
+      modal.style.left =
+        "0";
 
-      <button
-        onclick="closeJobDetails()"
-        style="
-          width:100%;
-          margin-top:10px;
-          padding:10px;
+      modal.style.width =
+        "100%";
+
+      modal.style.height =
+        "100%";
+
+      modal.style.background =
+        "rgba(0,0,0,0.6)";
+
+      modal.style.zIndex =
+        "99998";
+
+      modal.style.display =
+        "flex";
+
+      modal.style.alignItems =
+        "center";
+
+      modal.style.justifyContent =
+        "center";
+
+      modal.style.padding =
+        "20px";
+
+      modal.style.boxSizing =
+        "border-box";
+
+
+
+      modal.innerHTML = `
+
+        <div style="
           background:white;
-          border:1px solid #ccc;
-          border-radius:8px;
-        "
-      >
-        Close
-      </button>
-
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-}
+          width:100%;
+          max-width:550px;
+          max-height:90vh;
+          overflow-y:auto;
+          border-radius:15px;
+          padding:25px;
+          box-sizing:border-box;
+        ">
 
 
-function closeJobDetails() {
+          <h2 style="margin-top:0;">
 
-  const modal =
-    document.getElementById(
-      "jobDetailsModal"
-    );
+            ${escapeHtml(request.title)}
 
-  if (modal) {
-    modal.remove();
-  }
-
-}
+          </h2>
 
 
-async function acceptJob(jobId) {
+          <p>
 
-  const {
-    data: { user },
-    error: userError
-  } = await supabaseClient.auth.getUser();
+            <strong>
+              Service:
+            </strong>
 
-  if (userError || !user) {
-    showNotification("Please sign in again.");
-    return;
-  }
+            ${escapeHtml(request.service)}
 
-  showNotification("Accepting job...");
+          </p>
 
-  const { data, error } = await supabaseClient
-    .from("job_matches")
-    .insert({
-      job_id: jobId,
-      professional_id: user.id,
-      status: "offered"
-    })
-    .select()
-    .single();
 
-  if (error) {
-    console.error("Accept job error:", error);
+          <p>
 
-    if (error.code === "23505") {
-      showNotification("You have already accepted this job.");
-    } else {
-      showNotification(
-        "Could not accept job: " + error.message
+            <strong>
+              Description:
+            </strong>
+
+            <br>
+
+            ${
+              escapeHtml(
+                request.description
+              ) ||
+              "No description provided."
+            }
+
+          </p>
+
+
+          <p>
+
+            <strong>
+              Location:
+            </strong>
+
+            ${
+              escapeHtml(
+                request.location
+              ) ||
+              "Not specified"
+            }
+
+          </p>
+
+
+          <p>
+
+            <strong>
+              Date:
+            </strong>
+
+            ${
+              escapeHtml(
+                request.preferred_date
+              ) ||
+              "Flexible"
+            }
+
+          </p>
+
+
+          <p>
+
+            <strong>
+              Time:
+            </strong>
+
+            ${
+              escapeHtml(
+                request.preferred_time
+              ) ||
+              "Flexible"
+            }
+
+          </p>
+
+
+          <p>
+
+            <strong>
+              Billing:
+            </strong>
+
+            ${
+              escapeHtml(
+                request.billing_type
+              ) ||
+              "Not specified"
+            }
+
+          </p>
+
+
+          <p>
+
+            <strong>
+              Status:
+            </strong>
+
+            ${escapeHtml(request.status)}
+
+          </p>
+
+
+          <div style="
+            display:flex;
+            gap:10px;
+            margin-top:25px;
+          ">
+
+
+            <button
+              onclick="acceptJob('${request.id}')"
+              style="
+                flex:1;
+                padding:12px;
+                background:#0b8f55;
+                color:white;
+                border:none;
+                border-radius:8px;
+                font-weight:bold;
+              "
+            >
+              Accept Request
+            </button>
+
+
+            <button
+              onclick="declineJob('${request.id}')"
+              style="
+                flex:1;
+                padding:12px;
+                background:#ddd;
+                color:#222;
+                border:none;
+                border-radius:8px;
+              "
+            >
+              Decline
+            </button>
+
+
+          </div>
+
+
+          <button
+            onclick="closeJobDetails()"
+            style="
+              width:100%;
+              margin-top:10px;
+              padding:10px;
+              background:white;
+              border:1px solid #ccc;
+              border-radius:8px;
+            "
+          >
+            Close
+          </button>
+
+
+        </div>
+
+      `;
+
+
+      document.body.appendChild(
+        modal
       );
+
     }
 
-    return;
-  }
-
-  console.log("Job match created:", data);
-
-  closeJobDetails();
-
-  showNotification(
-    "Job accepted successfully!"
-  );
-
-  await loadOpenJobs();
-}
 
 
-function declineJob(jobId) {
+    /*
+      ==========================================
+      CLOSE REQUEST
+      ==========================================
+    */
 
-  closeJobDetails();
+    function closeJobDetails() {
 
-  showNotification(
-    "Job declined."
-  );
+      const modal =
+        document.getElementById(
+          "jobDetailsModal"
+        );
 
-}
 
+      if (modal) {
+        modal.remove();
+      }
+
+    }
+
+
+
+    /*
+      ==========================================
+      ACCEPT REQUEST
+      ==========================================
+    */
+
+    async function acceptJob(requestId) {
+
+      const {
+        data: { user },
+        error: userError
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      if (userError || !user) {
+
+        showNotification(
+          "Please sign in again."
+        );
+
+        return;
+
+      }
+
+
+      showNotification(
+        "Accepting request..."
+      );
+
+
+      /*
+        FOR NOW:
+
+        We only change the request
+        from pending → accepted.
+
+        We will build the professional
+        assignment / quotation system
+        after this test works.
+      */
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+
+          .from("service_requests")
+
+          .update({
+            status: "accepted"
+          })
+
+          .eq(
+            "id",
+            requestId
+          )
+
+          .eq(
+            "status",
+            "pending"
+          )
+
+          .select()
+          .single();
+
+
+      if (error) {
+
+        console.error(
+          "Accept request error:",
+          error
+        );
+
+
+        showNotification(
+          "Could not accept request: " +
+          error.message
+        );
+
+        return;
+
+      }
+
+
+      console.log(
+        "Request accepted:",
+        data
+      );
+
+
+      closeJobDetails();
+
+
+      showNotification(
+        "Request accepted successfully!"
+      );
+
+
+      await loadOpenJobs();
+
+    }
+
+
+
+    /*
+      ==========================================
+      DECLINE REQUEST
+      ==========================================
+    */
+
+    function declineJob(requestId) {
+
+      closeJobDetails();
+
+
+      showNotification(
+        "Request declined."
+      );
+
+    }
+
+
+
+    /*
+      ==========================================
+      SIGN OUT
+      ==========================================
+    */
 
     async function signOutUser() {
 
       await supabaseClient.auth.signOut();
+
 
       window.location.href =
         "index.html";
@@ -915,7 +1359,12 @@ function declineJob(jobId) {
     }
 
 
-    // START DASHBOARD
+
+    /*
+      ==========================================
+      START DASHBOARD
+      ==========================================
+    */
 
     loadProfessionalDashboard();
 
