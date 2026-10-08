@@ -193,7 +193,6 @@
         Manage your jobs, apprentices, materials and earnings.
       </p>
 
-
       <div class="availability">
 
         <label for="availability">
@@ -229,7 +228,6 @@
       Nearby Jobs
     </h2>
 
-
     <div
       id="jobsList"
       class="jobs-container"
@@ -248,9 +246,7 @@
       Quick Actions
     </h2>
 
-
     <div class="quick-actions">
-
 
       <div class="quick-card">
 
@@ -335,7 +331,6 @@
         </button>
 
       </div>
-
 
     </div>
 
@@ -1225,51 +1220,174 @@
 
     async function acceptJob(requestId) {
 
-  const {
-    data: { user },
-    error: userError
-  } = await supabaseClient.auth.getUser();
+      console.log(
+        "================================"
+      );
 
-  if (userError || !user) {
-    showNotification("Please sign in again.");
-    return;
-  }
+      console.log(
+        "ACCEPT REQUEST STARTED"
+      );
 
-  showNotification("Accepting request...");
+      console.log(
+        "REQUEST ID:",
+        requestId
+      );
 
-  const { error } = await supabaseClient
-    .from("request_assignments")
-    .insert({
-      request_id: requestId,
-      professional_id: user.id,
-      status: "accepted"
-    });
 
-  console.log("ASSIGNMENT ERROR:", error);
+      /*
+        GET CURRENT USER
+      */
 
-  if (error) {
+      const {
+        data: { user },
+        error: userError
+      } =
+        await supabaseClient.auth.getUser();
 
-    console.error(
-      "Accept request error:",
-      error
-    );
 
-    showNotification(
-      "Could not accept request: " +
-      error.message
-    );
+      console.log(
+        "CURRENT USER:",
+        user
+      );
 
-    return;
-  }
 
-  closeJobDetails();
+      console.log(
+        "USER ERROR:",
+        userError
+      );
 
-  showNotification(
-    "Request accepted successfully!"
-  );
 
-  await loadOpenJobs();
-}
+      if (userError || !user) {
+
+        console.error(
+          "USER ERROR:",
+          userError
+        );
+
+        showNotification(
+          "Please sign in again."
+        );
+
+        return;
+
+      }
+
+
+      showNotification(
+        "Accepting request..."
+      );
+
+
+      /*
+        INSERT ASSIGNMENT
+      */
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+
+          .from("request_assignments")
+
+          .insert({
+
+            request_id:
+              requestId,
+
+            professional_id:
+              user.id,
+
+            status:
+              "accepted"
+
+          })
+
+          .select();
+
+
+      /*
+        IMPORTANT DIAGNOSTIC LOG
+      */
+
+      console.log(
+        "ASSIGNMENT RESULT:",
+        {
+          requestId:
+            requestId,
+
+          professionalId:
+            user.id,
+
+          data:
+            data,
+
+          error:
+            error
+        }
+      );
+
+
+      console.log(
+        "ASSIGNMENT DATA:",
+        data
+      );
+
+
+      console.log(
+        "ASSIGNMENT ERROR:",
+        error
+      );
+
+
+      /*
+        HANDLE ERROR
+      */
+
+      if (error) {
+
+        console.error(
+          "ACCEPT REQUEST ERROR:",
+          error
+        );
+
+
+        showNotification(
+          "Could not accept request: " +
+          error.message
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+        SUCCESS
+      */
+
+      console.log(
+        "REQUEST ACCEPTED SUCCESSFULLY:",
+        data
+      );
+
+
+      closeJobDetails();
+
+
+      showNotification(
+        "Request accepted successfully!"
+      );
+
+
+      /*
+        RELOAD OPEN REQUESTS
+      */
+
+      await loadOpenJobs();
+
+    }
 
 
 
@@ -1280,6 +1398,12 @@
     */
 
     function declineJob(requestId) {
+
+      console.log(
+        "Request declined:",
+        requestId
+      );
+
 
       closeJobDetails();
 
@@ -1323,4 +1447,4 @@
   </script>
 
 </body>
-</html>
+</html></html>
